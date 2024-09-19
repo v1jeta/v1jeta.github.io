@@ -6,3 +6,4 @@
 
 ## Projects
 
+- [Interactive Scene Assignment](interactive-scene)
