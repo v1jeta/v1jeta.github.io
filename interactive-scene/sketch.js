@@ -8,32 +8,55 @@
 //global
 
 //player
-let playerX = 200;
-let playerY = 390;
-let playerWidth = 50;
-let playerHeight = 30;
+let playerX = 250;
+let playerY = 470;
+let playerWidth = 75;
+let playerHeight = 60;
 let playerSpeed = 3;
+
 
 //flower
 // row 1
 let flowerOneX = 30;
 let flowerOneY = 70;
-let flowerOneWidth = 30;
-let flowerOneHeight = 30;
+let flowerOneWidth = 40;
+let flowerOneHeight = 40;
+
 
 //blaster
 let blastOneX = playerX;
 let blastOneY = playerY;
-let blastOnePosition = 0; //keeps track of where the blast currently is
-let blastWidth = 5;
-let blastHeight = 15;
+let blastOnePosition = 0; //keeps track of where the blast currently is using state variables
+let blastWidth = 17;
+let blastHeight = 17;
 let blastSpeed = 7;
 let blastFired = false;
 
 
+//media imports
+let playerImg;
+let flowerImg;
+let blastImg;
+let blastSound;
+let powerUpSound;
+let mainFont;
+// counters
+let score = 0;
+
+function preload(){
+  playerImg = loadImage('watering-can.png');
+  flowerImg = loadImage('flower.png');
+  blastImg = loadImage('droplet.png');
+  blastSound = loadSound('laser-shot.mp3');
+  powerUpSound = loadSound('powerup-sparkle.mp3');
+  mainFont = loadFont('cutesy-font.ttf');
+}
+
 function setup() {
-  createCanvas(400, 400);
+  createCanvas(500, 500);
   rectMode(CENTER);
+  textAlign(CENTER);
+  imageMode(CENTER);
 }
 
 function draw() {
@@ -44,22 +67,31 @@ function draw() {
   movePlayer();
   blastDetect();
   firingTheBlast();
+  collision();
 }
 
 function worldAppearance(){
   noStroke();
   fill(232,244,248);
   rect(width/2, 10, width, 50); //score banner
+
+  // status bar
+  fill(135,206,235);
+  textSize(30);
+  text("score:", 30, 25);
+  textFont(mainFont);
+  textSize(20);
+  text(score, 65, 25);
 }
 
 function drawPlayer(){
   fill(165,169,180); //silver
-  rect(playerX, playerY, playerWidth, playerHeight);  
+  image(playerImg, playerX, playerY, playerWidth, playerHeight);  
 }
 
 function drawFlowers(){
   fill(255);
-  rect(flowerOneX, flowerOneY, flowerOneWidth, flowerOneHeight)
+  image(flowerImg,flowerOneX, flowerOneY, flowerOneWidth, flowerOneHeight)
 }
 
 function movePlayer(){
@@ -74,6 +106,7 @@ function movePlayer(){
 function blastDetect(){
   if (mouseIsPressed){
     blastFired = true; // fire blast when mouse is clicked
+    blastSound.play();
   }
   else {
     blastFired = false;
@@ -86,9 +119,9 @@ function firingTheBlast(){
     // 1  means in motion after firing
     // 2 means collision with object, return to player
 
-  // draw rocket
+  // draw blast
   fill(26,175,255);
-  rect(blastOneX, blastOneY, blastWidth, blastHeight);
+  image(blastImg, blastOneX, blastOneY, blastWidth, blastHeight);
 
   // keep track and fire rockets
   if (blastFired === true && blastOnePosition === 0){
@@ -116,6 +149,13 @@ function firingTheBlast(){
     blastOneY = playerY;
     blastOnePosition = 0; //reset
    }
+}
 
+function collision(){
+  if (blastOneX >= flowerOneX-flowerOneWidth/2 && blastOneX <= flowerOneX+flowerOneWidth/2 && blastOneY >= flowerOneY-flowerOneHeight/2 && blastOneY<=flowerOneY+flowerOneHeight/2){
+    flowerOneX = -1000; //send alien off screen
+    blastOnePosition = 2; //return rocket to player
+    score +=1; //adding points
+  }
 }
 
