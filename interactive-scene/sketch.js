@@ -42,6 +42,7 @@ let powerUpSound;
 let mainFont;
 // counters
 let score = 0;
+let gameState = 0;
 
 function preload(){
   playerImg = loadImage('watering-can.png');
@@ -59,7 +60,19 @@ function setup() {
   imageMode(CENTER);
 }
 
-function draw() {
+function draw(){
+if (gameState === 0){
+  startScreen()
+}
+if (gameState === 1){
+  game();
+} 
+if (gameState === 2){
+  win();
+}
+}
+
+function game() {
   background(135,206,235); //skyblue
   worldAppearance();
   drawPlayer();
@@ -82,6 +95,9 @@ function worldAppearance(){
   textFont(mainFont);
   textSize(20);
   text(score, 65, 25);
+  if (score>=1){
+    gameState = 2; //maxw
+  }
 }
 
 function drawPlayer(){
@@ -157,5 +173,34 @@ function collision(){
     blastOnePosition = 2; //return rocket to player
     score +=1; //adding points
   }
+}
+
+function startScreen(){
+  background(255, 105, 135)
+  //text
+  fill(255);
+  textFont(mainFont)
+  textSize(90);
+  text("flower frenzy!", width/2, 80)
+  textSize(40);
+  text("use left and right arrows to move,", width/2, 170)
+  text("click to shoot,", width/2, 230)
+  text("collect power ups,", width/2, 290)
+  text("and grow your garden!", width/2, 350)
+  text("press any key to start", width/2, 450)
+
+  if (keyIsPressed){
+    gameState = 1; 
+  }
+}
+function win(){
+  background(255, 105, 135)
+  //text
+  fill(255);
+  textFont(mainFont)
+  textSize(100);
+  text("you win!", width/2, 230)
+  textSize(40);
+  text("refresh to play again :)", width/2, 300)
 }
 
