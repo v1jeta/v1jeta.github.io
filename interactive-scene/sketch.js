@@ -16,11 +16,47 @@ let playerSpeed = 3;
 
 
 //flower
+let flowerWidth = 40;
+let flowerHeight = 40;
 // row 1
 let flowerOneX = 30;
 let flowerOneY = 70;
-let flowerOneWidth = 40;
-let flowerOneHeight = 40;
+let flowerTwoX = 80;
+let flowerTwoY = 70;
+let flowerThreeX = 130;
+let flowerThreeY = 70;
+let flowerFourX = 180;
+let flowerFourY = 70;
+let flowerFiveX = 230;
+let flowerFiveY = 70;
+let flowerSixX = 280;
+let flowerSixY = 70;
+let flowerSevenX = 330;
+let flowerSevenY = 70;
+let flowerEightX = 380;
+let flowerEightY = 70;
+let flowerNineX = 430;
+let flowerNineY = 70;
+// row 2
+let flowerTenX = 30;
+let flowerTenY = 120;
+let flowerElevenX = 80;
+let flowerElevenY = 120;
+let flowerTwelveX = 130;
+let flowerTwelveY = 120;
+let flowerThirteenX = 180;
+let flowerThirteenY = 120
+let flowerFourteenX = 230;
+let flowerFourteenY = 120
+let flowerFifteenX = 280;
+let flowerFifteenY = 120;
+let flowerSixteenX = 330;
+let flowerSixteenY = 120;
+let flowerSeventeenX = 380;
+let flowerSeventeenY = 120;
+let flowerEighteenX = 430;
+let flowerEighteenY = 120;
+
 
 
 //blaster
@@ -95,7 +131,7 @@ function worldAppearance(){
   textFont(mainFont);
   textSize(20);
   text(score, 65, 25);
-  if (score>=1){
+  if (score>=18){
     gameState = 2; //maxw
   }
 }
@@ -107,7 +143,28 @@ function drawPlayer(){
 
 function drawFlowers(){
   fill(255);
-  image(flowerImg,flowerOneX, flowerOneY, flowerOneWidth, flowerOneHeight)
+  // row one
+  image(flowerImg,flowerOneX, flowerOneY, flowerWidth, flowerHeight)
+  image(flowerImg,flowerTwoX, flowerTwoY, flowerWidth, flowerHeight)
+  image(flowerImg,flowerThreeX, flowerThreeY, flowerWidth, flowerHeight)
+  image(flowerImg,flowerFourX, flowerFourY, flowerWidth, flowerHeight)
+  image(flowerImg,flowerFiveX, flowerFiveY, flowerWidth, flowerHeight)
+  image(flowerImg,flowerSixX, flowerSixY, flowerWidth, flowerHeight)
+  image(flowerImg,flowerSevenX, flowerSevenY, flowerWidth, flowerHeight)
+  image(flowerImg,flowerEightX, flowerEightY, flowerWidth, flowerHeight)
+  image(flowerImg,flowerNineX, flowerNineY, flowerWidth, flowerHeight)
+
+  // row two
+  image(flowerImg,flowerTenX, flowerTenY, flowerWidth, flowerHeight)
+  image(flowerImg,flowerElevenX, flowerElevenY, flowerWidth, flowerHeight)
+  image(flowerImg,flowerTwelveX, flowerTwelveY, flowerWidth, flowerHeight)
+  image(flowerImg,flowerThirteenX, flowerThirteenY, flowerWidth, flowerHeight)
+  image(flowerImg,flowerFourteenX, flowerFourteenY, flowerWidth, flowerHeight)
+  image(flowerImg,flowerFifteenX, flowerFifteenY, flowerWidth, flowerHeight)
+  image(flowerImg,flowerSixteenX, flowerSixteenY, flowerWidth, flowerHeight)
+  image(flowerImg,flowerSeventeenX, flowerSeventeenY, flowerWidth, flowerHeight)
+  image(flowerImg,flowerEighteenX, flowerEighteenY, flowerWidth, flowerHeight)
+
 }
 
 function movePlayer(){
@@ -168,11 +225,117 @@ function firingTheBlast(){
 }
 
 function collision(){
-  if (blastOneX >= flowerOneX-flowerOneWidth/2 && blastOneX <= flowerOneX+flowerOneWidth/2 && blastOneY >= flowerOneY-flowerOneHeight/2 && blastOneY<=flowerOneY+flowerOneHeight/2){
+// row one
+  // collision with flower 1
+  if (blastOneX >= flowerOneX-flowerWidth/2 && blastOneX <= flowerOneX+flowerWidth/2 && blastOneY >= flowerOneY-flowerHeight/2 && blastOneY<=flowerOneY+flowerHeight/2){
     flowerOneX = -1000; //send alien off screen
     blastOnePosition = 2; //return rocket to player
     score +=1; //adding points
   }
+  // collision with flower 2
+  if (blastOneX >= flowerTwoX-flowerWidth/2 && blastOneX <= flowerTwoX+flowerWidth/2 && blastOneY >= flowerTwoY-flowerHeight/2 && blastOneY<=flowerTwoY+flowerHeight/2){
+    flowerTwoX = -1000; //send alien off screen
+    blastOnePosition = 2; //return rocket to player
+    score +=1; //adding points
+  }
+    // collision with flower 3
+  if (blastOneX >= flowerThreeX-flowerWidth/2 && blastOneX <= flowerThreeX+flowerWidth/2 && blastOneY >= flowerThreeY-flowerHeight/2 && blastOneY<=flowerThreeY+flowerHeight/2){
+    flowerThreeX = -1000; //send alien off screen
+    blastOnePosition = 2; //return rocket to player
+    score +=1; //adding points
+  }
+  // collision with flower 4
+  if (blastOneX >= flowerFourX-flowerWidth/2 && blastOneX <= flowerFourX+flowerWidth/2 && blastOneY >= flowerFourY-flowerHeight/2 && blastOneY<=flowerFourY+flowerHeight/2){
+    flowerFourX = -1000; //send alien off screen
+    blastOnePosition = 2; //return rocket to player
+    score +=1; //adding points
+  }
+  // collision with flower 5
+  if (blastOneX >= flowerFiveX-flowerWidth/2 && blastOneX <= flowerFiveX+flowerWidth/2 && blastOneY >= flowerFiveY-flowerHeight/2 && blastOneY<=flowerFiveY+flowerHeight/2){
+    flowerFiveX = -1000; //send alien off screen
+    blastOnePosition = 2; //return rocket to player
+    score +=1; //adding points
+  }
+  // collision with flower 6
+  if (blastOneX >= flowerSixX-flowerWidth/2 && blastOneX <= flowerSixX+flowerWidth/2 && blastOneY >= flowerSixY-flowerHeight/2 && blastOneY<=flowerSixY+flowerHeight/2){
+    flowerSixX = -1000; //send alien off screen
+    blastOnePosition = 2; //return rocket to player
+    score +=1; //adding points
+  }
+  // collision with flower 7
+  if (blastOneX >= flowerSevenX-flowerWidth/2 && blastOneX <= flowerSevenX+flowerWidth/2 && blastOneY >= flowerSevenY-flowerHeight/2 && blastOneY<=flowerSevenY+flowerHeight/2){
+    flowerSevenX = -1000; //send alien off screen
+    blastOnePosition = 2; //return rocket to player
+    score +=1; //adding points
+   }
+  // collision with flower 8
+  if (blastOneX >= flowerEightX-flowerWidth/2 && blastOneX <= flowerEightX+flowerWidth/2 && blastOneY >= flowerEightY-flowerHeight/2 && blastOneY<=flowerEightY+flowerHeight/2){
+    flowerEightX = -1000; //send alien off screen
+    blastOnePosition = 2; //return rocket to player
+    score +=1; //adding points
+  }
+  // collision with flower 9
+  if (blastOneX >= flowerNineX-flowerWidth/2 && blastOneX <= flowerNineX+flowerWidth/2 && blastOneY >= flowerNineY-flowerHeight/2 && blastOneY<=flowerNineY+flowerHeight/2){
+    flowerEightX = -1000; //send alien off screen
+    blastOnePosition = 2; //return rocket to player
+    score +=1; //adding points
+  }
+
+//row two
+// collision with flower 10
+if (blastOneX >= flowerTenX-flowerWidth/2 && blastOneX <= flowerTenX+flowerWidth/2 && blastOneY >= flowerTenY-flowerHeight/2 && blastOneY<=flowerTenY+flowerHeight/2){
+  flowerTenX = -1000; //send alien off screen
+  blastOnePosition = 2; //return rocket to player
+  score +=1; //adding points
+}
+// collision with flower 11
+if (blastOneX >= flowerElevenX-flowerWidth/2 && blastOneX <= flowerElevenX+flowerWidth/2 && blastOneY >= flowerElevenY-flowerHeight/2 && blastOneY<=flowerElevenY+flowerHeight/2){
+  flowerElevenX = -1000; //send alien off screen
+  blastOnePosition = 2; //return rocket to player
+  score +=1; //adding points
+}
+  // collision with flower 12
+if (blastOneX >= flowerTwelveX-flowerWidth/2 && blastOneX <= flowerTwelveX+flowerWidth/2 && blastOneY >= flowerTwelveY-flowerHeight/2 && blastOneY<=flowerTwelveY+flowerHeight/2){
+  flowerTwelveX = -1000; //send alien off screen
+  blastOnePosition = 2; //return rocket to player
+  score +=1; //adding points
+}
+// collision with flower 13
+if (blastOneX >= flowerThirteenX-flowerWidth/2 && blastOneX <= flowerThirteenX+flowerWidth/2 && blastOneY >= flowerThirteenY-flowerHeight/2 && blastOneY<=flowerThirteenY+flowerHeight/2){
+  flowerThirteenX = -1000; //send alien off screen
+  blastOnePosition = 2; //return rocket to player
+  score +=1; //adding points
+}
+// collision with flower 14
+if (blastOneX >= flowerFourteenX-flowerWidth/2 && blastOneX <= flowerFourteenX+flowerWidth/2 && blastOneY >= flowerFourteenY-flowerHeight/2 && blastOneY<=flowerFourteenY+flowerHeight/2){
+  flowerFourteenX = -1000; //send alien off screen
+  blastOnePosition = 2; //return rocket to player
+  score +=1; //adding points
+}
+// collision with flower 15
+if (blastOneX >= flowerFifteenX-flowerWidth/2 && blastOneX <= flowerFifteenX+flowerWidth/2 && blastOneY >= flowerFifteenY-flowerHeight/2 && blastOneY<=flowerFifteenY+flowerHeight/2){
+  flowerFifteenX = -1000; //send alien off screen
+  blastOnePosition = 2; //return rocket to player
+  score +=1; //adding points
+}
+// collision with flower 16
+if (blastOneX >= flowerSixteenX-flowerWidth/2 && blastOneX <= flowerSixteenX+flowerWidth/2 && blastOneY >= flowerSixteenY-flowerHeight/2 && blastOneY<=flowerSixteenY+flowerHeight/2){
+  flowerSixteenX = -1000; //send alien off screen
+  blastOnePosition = 2; //return rocket to player
+  score +=1; //adding points
+ }
+// collision with flower 17
+if (blastOneX >= flowerSeventeenX-flowerWidth/2 && blastOneX <= flowerSeventeenX+flowerWidth/2 && blastOneY >= flowerSeventeenY-flowerHeight/2 && blastOneY<=flowerSeventeenY+flowerHeight/2){
+  flowerSeventeenX = -1000; //send alien off screen
+  blastOnePosition = 2; //return rocket to player
+  score +=1; //adding points
+}
+// collision with flower 18
+if (blastOneX >= flowerEighteenX-flowerWidth/2 && blastOneX <= flowerEighteenX+flowerWidth/2 && blastOneY >= flowerEighteenY-flowerHeight/2 && blastOneY<=flowerEighteenY+flowerHeight/2){
+  flowerEighteenX = -1000; //send alien off screen
+  blastOnePosition = 2; //return rocket to player
+  score +=1; //adding points
+}
 }
 
 function startScreen(){
