@@ -55,13 +55,16 @@ function changeStateIfNeeded(){
   if (lightState === 1 && millis()> lastSwitchedTime + GREEN_LIGHT_DURATION){
     lightState = 2;
     lastSwitchedTime = millis();
+    console.log(lightState);
   }
   else if (lightState === 2 && millis()> lastSwitchedTime + YELLOW_LIGHT_DURATION){
     lightState = 3;
     lastSwitchedTime = millis();
+    console.log(lightState);
   }
   else if (lightState === 3 && millis()> lastSwitchedTime + RED_LIGHT_DURATION){
     lightState = 1;
     lastSwitchedTime = millis();
+    console.log(lightState);
   }
 }

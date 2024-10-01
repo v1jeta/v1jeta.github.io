@@ -6,10 +6,10 @@
 // - describe what you did to take this project "above and beyond"
 
 
-let x = 0
-let y = 0
-let size = 50
-let speed = 7
+let x = 0;
+let y = 0;
+let sqSize = 50;
+let speed = 7;
 let state = "right";
 function setup() {
   createCanvas(400, 400);
@@ -22,20 +22,15 @@ function draw() {
 }
 
 function moveSquare(){
-    // if (x+=speed;){
-    //   x+=speed;}
-    // else{
-    //   y+=speed;}
-  
   if (state === "right"){
     x+=speed;
-    if (x>= width -size){
+    if (x>= width -sqSize){
       state = "down";
     }
   }
   else if (state === "down"){
     y+=speed;
-    if (y>=height-size){
+    if (y>=height-sqSize){
       state = "left";
     }
   }
@@ -43,12 +38,13 @@ function moveSquare(){
   else if (state === "left"){
     x-=speed;
     if (x<=0){
-      state = "up";}
+      state = "up";
+    }
   }
   else if (state === "up"){
     y -= speed;
     if (y<=0){
-      state = "right"
+      state = "right";
     }
     
   }
@@ -56,4 +52,5 @@ function moveSquare(){
 
 function displaySquare(){
   fill("pink");
-  square(x,y,size)}
+  square(x,y,size);
+}
