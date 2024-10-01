@@ -446,10 +446,10 @@ function beetleAttacks(){
   textFont(mainFont);
   textSize(15);
   fill(34,139,34); //forest green
-  text(beetleHealth, beetleX, beetleY-25)
+  text(beetleHealth, beetleX, beetleY-25);
 
   // beetle movement
-  beetleX = beetleX + (beetleSpeed*beetleDirection);
+  beetleX = beetleX + beetleSpeed*beetleDirection;
   if (beetleX>=width-10){ //hits right wall
     beetleDirection = beetleDirection*-1;
   }
@@ -473,8 +473,8 @@ function beetleAttacks(){
   }
 
   //beetle fights back
-    //position one = motion after firing
-    //position two = reset back to beetle
+  //position one = motion after firing
+  //position two = reset back to beetle
   //draw goo
   image(gooImg,gooX, gooY, gooWidth, gooHeight);
 
@@ -508,41 +508,41 @@ function beetleAttacks(){
 }
 
 function startScreen(){
-  background(255, 105, 135)
+  background(255, 105, 135);
   //text
   fill(255);
-  textFont(mainFont)
+  textFont(mainFont);
   textSize(90);
-  text("flower frenzy!", width/2, 80)
+  text("flower frenzy!", width/2, 80);
   textSize(40);
-  text("use left and right arrows to move,", width/2, 170)
-  text("click to shoot,", width/2, 230)
-  text("collect power ups,", width/2, 290)
-  text("and grow your garden!", width/2, 350)
-  text("press any key to start", width/2, 450)
+  text("use left and right arrows to mov;e,", width/2, 170);
+  text("click to shoot,", width/2, 230);
+  text("collect power ups,", width/2, 290);
+  text("and grow your garden!", width/2, 350);
+  text("press any key to start", width/2, 450);
 
   if (keyIsPressed){
     gameState = 1; 
   }
 }
 function win(){
-  background(255, 105, 135)
+  background(255, 105, 135);
   //text
   fill(255);
-  textFont(mainFont)
+  textFont(mainFont);
   textSize(100);
-  text("you win!", width/2, 230)
+  text("you win!", width/2, 230);
   textSize(40);
-  text("refresh to play again :)", width/2, 300)
+  text("refresh to play again :)", width/2, 300);
 }
 
 function lose(){
-  background(255, 105, 135)
+  background(255, 105, 135);
   //text
   fill(255);
-  textFont(mainFont)
+  textFont(mainFont);
   textSize(100);
-  text("you lost!", width/2, 230)
+  text("you lost!", width/2, 230);
   textSize(40);
-  text("refresh to try again :(", width/2, 300)
+  text("refresh to try again :(", width/2, 300);
 }
