@@ -18,46 +18,66 @@ let playerSpeed = 3;
 //flower
 let flowerWidth = 40;
 let flowerHeight = 40;
+let row = 1;
+let currentRow = row;
+let rowDistance = 10;
+let flowerDistance = 0;
+let flowerSpeed = 1;
+let flowerDirection = 1;
 // row 1
-let flowerOneX = 30;
-let flowerOneY = 70;
-let flowerTwoX = 80;
-let flowerTwoY = 70;
-let flowerThreeX = 130;
-let flowerThreeY = 70;
-let flowerFourX = 180;
-let flowerFourY = 70;
-let flowerFiveX = 230;
-let flowerFiveY = 70;
-let flowerSixX = 280;
-let flowerSixY = 70;
-let flowerSevenX = 330;
-let flowerSevenY = 70;
-let flowerEightX = 380;
-let flowerEightY = 70;
-let flowerNineX = 430;
-let flowerNineY = 70;
+let flowerOneX = 50;
+let flowerOneY = 120;
+let flowerTwoX = 100;
+let flowerTwoY = 120;
+let flowerThreeX = 150;
+let flowerThreeY = 120;
+let flowerFourX = 200;
+let flowerFourY = 120;
+let flowerFiveX = 250;
+let flowerFiveY = 120;
+let flowerSixX = 300;
+let flowerSixY = 120;
+let flowerSevenX = 350;
+let flowerSevenY = 120;
+let flowerEightX = 400;
+let flowerEightY = 120;
+let flowerNineX = 450;
+let flowerNineY = 120;
 // row 2
-let flowerTenX = 30;
-let flowerTenY = 120;
-let flowerElevenX = 80;
-let flowerElevenY = 120;
-let flowerTwelveX = 130;
-let flowerTwelveY = 120;
-let flowerThirteenX = 180;
-let flowerThirteenY = 120
-let flowerFourteenX = 230;
-let flowerFourteenY = 120
-let flowerFifteenX = 280;
-let flowerFifteenY = 120;
-let flowerSixteenX = 330;
-let flowerSixteenY = 120;
-let flowerSeventeenX = 380;
-let flowerSeventeenY = 120;
-let flowerEighteenX = 430;
-let flowerEighteenY = 120;
+let flowerTenX = 50;
+let flowerTenY = 160;
+let flowerElevenX = 100;
+let flowerElevenY = 160;
+let flowerTwelveX = 150;
+let flowerTwelveY = 160;
+let flowerThirteenX = 200;
+let flowerThirteenY = 160
+let flowerFourteenX = 250;
+let flowerFourteenY = 160
+let flowerFifteenX = 300;
+let flowerFifteenY = 160;
+let flowerSixteenX = 350;
+let flowerSixteenY = 160;
+let flowerSeventeenX = 400;
+let flowerSeventeenY = 160;
+let flowerEighteenX = 450;
+let flowerEighteenY = 160;
 
+// beetle
+let beetleX = 250;
+let beetleY = 72;
+let beetleWidth = 80;
+let beetleHeight = 70;
+let beetleSpeed = 3; 
+let beetleDirection = 1;
+let beetleHealth = 100;
 
+//boss blast
+let gooX = beetleX;
+let gooY = beetleY;
+let gooPosition = 1; //keep track of where the blast is using state variable
+let gooWidth = 20;
+let gooHeight = 20;
 
 //blaster
 let blastOneX = playerX;
@@ -65,7 +85,7 @@ let blastOneY = playerY;
 let blastOnePosition = 0; //keeps track of where the blast currently is using state variables
 let blastWidth = 17;
 let blastHeight = 17;
-let blastSpeed = 7;
+let blastSpeed = 8;
 let blastFired = false;
 
 
@@ -73,17 +93,22 @@ let blastFired = false;
 let playerImg;
 let flowerImg;
 let blastImg;
+let beetleImg;
+let gooImg;
 let blastSound;
 let powerUpSound;
 let mainFont;
 // counters
 let score = 0;
+let lives = 5;
 let gameState = 0;
 
 function preload(){
   playerImg = loadImage('watering-can.png');
   flowerImg = loadImage('flower.png');
   blastImg = loadImage('droplet.png');
+  beetleImg = loadImage('beetle.png');
+  gooImg = loadImage('goo.png');
   blastSound = loadSound('laser-shot.mp3');
   powerUpSound = loadSound('powerup-sparkle.mp3');
   mainFont = loadFont('cutesy-font.ttf');
@@ -106,6 +131,9 @@ if (gameState === 1){
 if (gameState === 2){
   win();
 }
+if (gameState == 3){
+  lose();
+}
 }
 
 function game() {
@@ -117,6 +145,7 @@ function game() {
   blastDetect();
   firingTheBlast();
   collision();
+  beetleAttacks();
 }
 
 function worldAppearance(){
@@ -126,14 +155,24 @@ function worldAppearance(){
 
   // status bar
   fill(135,206,235);
+  //score
   textSize(30);
   text("score:", 30, 25);
   textFont(mainFont);
   textSize(20);
   text(score, 65, 25);
-  if (score>=18){
-    gameState = 2; //maxw
+  if (score>=28){
+    gameState = 2; //win screen
   }
+  textSize(30);
+  text("lives:", 450, 27);
+  textFont(mainFont);
+  textSize(20);
+  text(lives, 480, 25);
+  if (lives<=0){
+    gameState = 3; //lose screen
+  }
+
 }
 
 function drawPlayer(){
@@ -165,6 +204,68 @@ function drawFlowers(){
   image(flowerImg,flowerSeventeenX, flowerSeventeenY, flowerWidth, flowerHeight)
   image(flowerImg,flowerEighteenX, flowerEighteenY, flowerWidth, flowerHeight)
 
+// allow motion
+flowerOneX = flowerOneX + (flowerSpeed*flowerDirection); //back and forth
+flowerOneY = flowerOneY + flowerDistance; // adjust rows
+flowerTwoX = flowerTwoX + (flowerSpeed*flowerDirection); 
+flowerTwoY = flowerTwoY + flowerDistance;
+flowerThreeX = flowerThreeX + (flowerSpeed*flowerDirection); 
+flowerThreeY = flowerThreeY + flowerDistance;
+flowerFourX = flowerFourX + (flowerSpeed*flowerDirection); 
+flowerFourY = flowerFourY + flowerDistance;
+flowerFiveX = flowerFiveX + (flowerSpeed*flowerDirection); 
+flowerFiveY = flowerFiveY + flowerDistance;
+flowerSixX = flowerSixX + (flowerSpeed*flowerDirection); 
+flowerSixY = flowerSixY + flowerDistance;
+flowerSevenX = flowerSevenX + (flowerSpeed*flowerDirection); 
+flowerSevenY = flowerSevenY + flowerDistance;
+flowerEightX = flowerEightX + (flowerSpeed*flowerDirection); 
+flowerEightY = flowerEightY + flowerDistance;
+flowerNineX = flowerNineX + (flowerSpeed*flowerDirection); 
+flowerNineY = flowerNineY + flowerDistance;
+flowerTenX = flowerTenX + (flowerSpeed*flowerDirection); 
+flowerTenY = flowerTenY + flowerDistance;
+flowerElevenX = flowerElevenX + (flowerSpeed*flowerDirection); 
+flowerElevenY = flowerElevenY + flowerDistance;
+flowerTwelveX = flowerTwelveX + (flowerSpeed*flowerDirection); 
+flowerTwelveY = flowerTwelveY + flowerDistance;
+flowerThirteenX = flowerThirteenX + (flowerSpeed*flowerDirection); 
+flowerThirteenY = flowerThirteenY + flowerDistance;
+flowerFourteenX = flowerFourteenX + (flowerSpeed*flowerDirection); 
+flowerFourteenY = flowerFourteenY + flowerDistance;
+flowerFifteenX = flowerFifteenX + (flowerSpeed*flowerDirection); 
+flowerFifteenY = flowerFifteenY + flowerDistance;
+flowerSixteenX = flowerSixteenX + (flowerSpeed*flowerDirection); 
+flowerSixteenY = flowerSixteenY + flowerDistance;
+flowerSeventeenX = flowerSeventeenX + (flowerSpeed*flowerDirection); 
+flowerSeventeenY = flowerSeventeenY + flowerDistance;
+flowerEighteenX = flowerEighteenX + (flowerSpeed*flowerDirection); 
+flowerEighteenY = flowerEighteenY + flowerDistance;
+
+
+// horizontal movement
+if (flowerNineX >= width-20){
+  flowerDirection = flowerDirection*-1;
+  row +=1;//go down
+}
+if (flowerOneX <=20){
+  flowerDirection = flowerDirection*-1
+  row += 1;//go down
+}
+
+// vertical movement
+if (row>currentRow){
+  flowerDistance = rowDistance;
+  currentRow = row;//reset
+}
+else{
+  flowerDistance = 0
+}
+
+// at bottom - game over
+ if (row>=28){
+  gameState = 3;
+ }
 }
 
 function movePlayer(){
@@ -338,6 +439,74 @@ if (blastOneX >= flowerEighteenX-flowerWidth/2 && blastOneX <= flowerEighteenX+f
 }
 }
 
+function beetleAttacks(){
+  //draw beetle
+  image(beetleImg, beetleX, beetleY, beetleWidth, beetleHeight);
+  //print health
+  textFont(mainFont);
+  textSize(15);
+  fill(34,139,34); //forest green
+  text(beetleHealth, beetleX, beetleY-25)
+
+  // beetle movement
+  beetleX = beetleX + (beetleSpeed*beetleDirection);
+  if (beetleX>=width-10){ //hits right wall
+    beetleDirection = beetleDirection*-1;
+  }
+  if (beetleX<=10){ //hits left wall
+    beetleDirection = beetleDirection*-1;
+  }
+
+  //hit by rocket
+  if (blastOneX >= beetleX - beetleWidth/2 && blastOneX <= beetleX + beetleWidth/2 && blastOneY >= beetleY-beetleHeight/2 && blastOneY<=beetleY+beetleHeight/2){
+    if(beetleHealth>10){ //not dead yet
+      score+=1;
+      beetleHealth -= 10;
+      blastOnePosition = 2;
+    }
+    else{
+      score+=1;
+      beetleSpeed = 0; //stop moving
+      beetleX = -1000; //move off screen
+      blastOnePosition = 2;
+    }
+  }
+
+  //beetle fights back
+    //position one = motion after firing
+    //position two = reset back to beetle
+  //draw goo
+  image(gooImg,gooX, gooY, gooWidth, gooHeight);
+
+  //fire
+  if (gooPosition === 1){
+    gooX=gooX;
+    gooY = gooY+blastSpeed;
+
+    //return
+    if (gooY>=height){
+      gooPosition = 2;
+    }
+  }
+  else{
+    gooX = beetleX;
+    gooY = beetleY;
+  }
+
+  if (gooPosition ===2){
+    gooX = beetleX;
+    gooY=beetleY;
+    gooPosition = 1;
+  }
+
+  //goo collision with player
+  if (gooX>=playerX-playerWidth/2 && gooX<=playerX+playerWidth/2 && gooY>=playerY-playerHeight/2 && gooY<=playerY+playerHeight/2){
+    lives -= 1;
+    playerX = width/2; //set player to middle
+    gooPosition = 2; //send rocket back
+  }
+}
+
 function startScreen(){
   background(255, 105, 135)
   //text
@@ -367,3 +536,13 @@ function win(){
   text("refresh to play again :)", width/2, 300)
 }
 
+function lose(){
+  background(255, 105, 135)
+  //text
+  fill(255);
+  textFont(mainFont)
+  textSize(100);
+  text("you lost!", width/2, 230)
+  textSize(40);
+  text("refresh to try again :(", width/2, 300)
+}
