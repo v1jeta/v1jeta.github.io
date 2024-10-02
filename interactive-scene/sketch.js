@@ -1,9 +1,13 @@
-// Flora Frenzy
+// Bacteria Battle
 // Vijeta Thakur
 // October 1st 2024
 //
 // Extra for Experts:
-// - describe what you did to take this project "above and beyond"
+// I imported different fonts and added audio into my project. 
+
+// Side Notes:
+// I attempted to use an array to display my images and move my characters on p5js which worked decently
+// but I couldn't make it work on VS Code so I had to repeat a lot of code (sorry in advance if it makes you cry a little bit).
 
 //global
 
@@ -15,66 +19,68 @@ let playerHeight = 60;
 let playerSpeed = 3;
 
 
-//flower
-let flowerWidth = 40;
-let flowerHeight = 40;
+//germ
+let germWidth = 40;
+let germHeight = 40;
 let row = 1;
 let currentRow = row;
 let rowDistance = 10;
-let flowerDistance = 0;
-let flowerSpeed = 1;
-let flowerDirection = 1;
-// row 1
-let flowerOneX = 50;
-let flowerOneY = 120;
-let flowerTwoX = 100;
-let flowerTwoY = 120;
-let flowerThreeX = 150;
-let flowerThreeY = 120;
-let flowerFourX = 200;
-let flowerFourY = 120;
-let flowerFiveX = 250;
-let flowerFiveY = 120;
-let flowerSixX = 300;
-let flowerSixY = 120;
-let flowerSevenX = 350;
-let flowerSevenY = 120;
-let flowerEightX = 400;
-let flowerEightY = 120;
-let flowerNineX = 450;
-let flowerNineY = 120;
-// row 2
-let flowerTenX = 50;
-let flowerTenY = 160;
-let flowerElevenX = 100;
-let flowerElevenY = 160;
-let flowerTwelveX = 150;
-let flowerTwelveY = 160;
-let flowerThirteenX = 200;
-let flowerThirteenY = 160
-let flowerFourteenX = 250;
-let flowerFourteenY = 160
-let flowerFifteenX = 300;
-let flowerFifteenY = 160;
-let flowerSixteenX = 350;
-let flowerSixteenY = 160;
-let flowerSeventeenX = 400;
-let flowerSeventeenY = 160;
-let flowerEighteenX = 450;
-let flowerEighteenY = 160;
+let germDistance = 0;
+let germSpeed = 1;
+let germDirection = 1;
 
-// beetle
-let beetleX = 250;
-let beetleY = 72;
-let beetleWidth = 80;
-let beetleHeight = 70;
-let beetleSpeed = 3; 
-let beetleDirection = 1;
-let beetleHealth = 100;
+// row 1
+let germOneX = 50;
+let germOneY = 120;
+let germTwoX = 100;
+let germTwoY = 120;
+let germThreeX = 150;
+let germThreeY = 120;
+let germFourX = 200;
+let germFourY = 120;
+let germFiveX = 250;
+let germFiveY = 120;
+let germSixX = 300;
+let germSixY = 120;
+let germSevenX = 350;
+let germSevenY = 120;
+let germEightX = 400;
+let germEightY = 120;
+let germNineX = 450;
+let germNineY = 120;
+
+// row 2
+let germTenX = 50;
+let germTenY = 160;
+let germElevenX = 100;
+let germElevenY = 160;
+let germTwelveX = 150;
+let germTwelveY = 160;
+let germThirteenX = 200;
+let germThirteenY = 160
+let germFourteenX = 250;
+let germFourteenY = 160
+let germFifteenX = 300;
+let germFifteenY = 160;
+let germSixteenX = 350;
+let germSixteenY = 160;
+let germSeventeenX = 400;
+let germSeventeenY = 160;
+let germEighteenX = 450;
+let germEighteenY = 160;
+
+// boss
+let bossX = 250;
+let bossY = 72;
+let bossWidth = 80;
+let bossHeight = 70;
+let bossSpeed = 3; 
+let bossDirection = 1;
+let bossHealth = 100;
 
 //boss blast
-let gooX = beetleX;
-let gooY = beetleY;
+let gooX = bossX;
+let gooY = bossY;
 let gooPosition = 1; //keep track of where the blast is using state variable
 let gooWidth = 20;
 let gooHeight = 20;
@@ -91,12 +97,12 @@ let blastFired = false;
 
 //media imports
 let playerImg;
-let flowerImg;
+let germImg;
 let blastImg;
-let beetleImg;
+let bossImg;
 let gooImg;
 let blastSound;
-let powerUpSound;
+let backgroundSound;
 let mainFont;
 // counters
 let score = 0;
@@ -104,18 +110,19 @@ let lives = 5;
 let gameState = 0;
 
 function preload(){
-  playerImg = loadImage('watering-can.png');
-  flowerImg = loadImage('flower.png');
+  playerImg = loadImage('sanitizer.png');
+  germImg = loadImage('regGerm.png');
   blastImg = loadImage('droplet.png');
-  beetleImg = loadImage('beetle.png');
+  bossImg = loadImage('bossgerm.png');
   gooImg = loadImage('goo.png');
   blastSound = loadSound('laser-shot.mp3');
-  powerUpSound = loadSound('powerup-sparkle.mp3');
-  mainFont = loadFont('cutesy-font.ttf');
+  backgroundSound = loadSound('backgroundmusic.mp3')
+  mainFont = loadFont('mainFont.ttf');
 }
 
 function setup() {
   createCanvas(500, 500);
+  backgroundSound.play();
   rectMode(CENTER);
   textAlign(CENTER);
   imageMode(CENTER);
@@ -137,24 +144,24 @@ if (gameState == 3){
 }
 
 function game() {
-  background(135,206,235); //skyblue
+  background(135, 199, 152); 
   worldAppearance();
   drawPlayer();
-  drawFlowers();
+  drawGerms();
   movePlayer();
   blastDetect();
   firingTheBlast();
   collision();
-  beetleAttacks();
+  bossAttacks();
 }
 
 function worldAppearance(){
   noStroke();
-  fill(232,244,248);
+  fill(188, 230, 199);
   rect(width/2, 10, width, 50); //score banner
 
   // status bar
-  fill(135,206,235);
+  fill(46, 89, 59);
   //score
   textSize(30);
   text("score:", 30, 25);
@@ -180,86 +187,87 @@ function drawPlayer(){
   image(playerImg, playerX, playerY, playerWidth, playerHeight);  
 }
 
-function drawFlowers(){
+// displaying and moving germs
+function drawGerms(){
   fill(255);
   // row one
-  image(flowerImg,flowerOneX, flowerOneY, flowerWidth, flowerHeight)
-  image(flowerImg,flowerTwoX, flowerTwoY, flowerWidth, flowerHeight)
-  image(flowerImg,flowerThreeX, flowerThreeY, flowerWidth, flowerHeight)
-  image(flowerImg,flowerFourX, flowerFourY, flowerWidth, flowerHeight)
-  image(flowerImg,flowerFiveX, flowerFiveY, flowerWidth, flowerHeight)
-  image(flowerImg,flowerSixX, flowerSixY, flowerWidth, flowerHeight)
-  image(flowerImg,flowerSevenX, flowerSevenY, flowerWidth, flowerHeight)
-  image(flowerImg,flowerEightX, flowerEightY, flowerWidth, flowerHeight)
-  image(flowerImg,flowerNineX, flowerNineY, flowerWidth, flowerHeight)
+  image(germImg,germOneX, germOneY, germWidth, germHeight)
+  image(germImg,germTwoX, germTwoY, germWidth, germHeight)
+  image(germImg,germThreeX, germThreeY, germWidth, germHeight)
+  image(germImg,germFourX, germFourY, germWidth, germHeight)
+  image(germImg,germFiveX, germFiveY, germWidth, germHeight)
+  image(germImg,germSixX, germSixY, germWidth, germHeight)
+  image(germImg,germSevenX, germSevenY, germWidth, germHeight)
+  image(germImg,germEightX, germEightY, germWidth, germHeight)
+  image(germImg,germNineX, germNineY, germWidth, germHeight)
 
   // row two
-  image(flowerImg,flowerTenX, flowerTenY, flowerWidth, flowerHeight)
-  image(flowerImg,flowerElevenX, flowerElevenY, flowerWidth, flowerHeight)
-  image(flowerImg,flowerTwelveX, flowerTwelveY, flowerWidth, flowerHeight)
-  image(flowerImg,flowerThirteenX, flowerThirteenY, flowerWidth, flowerHeight)
-  image(flowerImg,flowerFourteenX, flowerFourteenY, flowerWidth, flowerHeight)
-  image(flowerImg,flowerFifteenX, flowerFifteenY, flowerWidth, flowerHeight)
-  image(flowerImg,flowerSixteenX, flowerSixteenY, flowerWidth, flowerHeight)
-  image(flowerImg,flowerSeventeenX, flowerSeventeenY, flowerWidth, flowerHeight)
-  image(flowerImg,flowerEighteenX, flowerEighteenY, flowerWidth, flowerHeight)
+  image(germImg,germTenX, germTenY, germWidth, germHeight)
+  image(germImg,germElevenX, germElevenY, germWidth, germHeight)
+  image(germImg,germTwelveX, germTwelveY, germWidth, germHeight)
+  image(germImg,germThirteenX, germThirteenY, germWidth, germHeight)
+  image(germImg,germFourteenX, germFourteenY, germWidth, germHeight)
+  image(germImg,germFifteenX, germFifteenY, germWidth, germHeight)
+  image(germImg,germSixteenX, germSixteenY, germWidth, germHeight)
+  image(germImg,germSeventeenX, germSeventeenY, germWidth, germHeight)
+  image(germImg,germEighteenX, germEighteenY, germWidth, germHeight)
 
 // allow motion
-flowerOneX = flowerOneX + (flowerSpeed*flowerDirection); //back and forth
-flowerOneY = flowerOneY + flowerDistance; // adjust rows
-flowerTwoX = flowerTwoX + (flowerSpeed*flowerDirection); 
-flowerTwoY = flowerTwoY + flowerDistance;
-flowerThreeX = flowerThreeX + (flowerSpeed*flowerDirection); 
-flowerThreeY = flowerThreeY + flowerDistance;
-flowerFourX = flowerFourX + (flowerSpeed*flowerDirection); 
-flowerFourY = flowerFourY + flowerDistance;
-flowerFiveX = flowerFiveX + (flowerSpeed*flowerDirection); 
-flowerFiveY = flowerFiveY + flowerDistance;
-flowerSixX = flowerSixX + (flowerSpeed*flowerDirection); 
-flowerSixY = flowerSixY + flowerDistance;
-flowerSevenX = flowerSevenX + (flowerSpeed*flowerDirection); 
-flowerSevenY = flowerSevenY + flowerDistance;
-flowerEightX = flowerEightX + (flowerSpeed*flowerDirection); 
-flowerEightY = flowerEightY + flowerDistance;
-flowerNineX = flowerNineX + (flowerSpeed*flowerDirection); 
-flowerNineY = flowerNineY + flowerDistance;
-flowerTenX = flowerTenX + (flowerSpeed*flowerDirection); 
-flowerTenY = flowerTenY + flowerDistance;
-flowerElevenX = flowerElevenX + (flowerSpeed*flowerDirection); 
-flowerElevenY = flowerElevenY + flowerDistance;
-flowerTwelveX = flowerTwelveX + (flowerSpeed*flowerDirection); 
-flowerTwelveY = flowerTwelveY + flowerDistance;
-flowerThirteenX = flowerThirteenX + (flowerSpeed*flowerDirection); 
-flowerThirteenY = flowerThirteenY + flowerDistance;
-flowerFourteenX = flowerFourteenX + (flowerSpeed*flowerDirection); 
-flowerFourteenY = flowerFourteenY + flowerDistance;
-flowerFifteenX = flowerFifteenX + (flowerSpeed*flowerDirection); 
-flowerFifteenY = flowerFifteenY + flowerDistance;
-flowerSixteenX = flowerSixteenX + (flowerSpeed*flowerDirection); 
-flowerSixteenY = flowerSixteenY + flowerDistance;
-flowerSeventeenX = flowerSeventeenX + (flowerSpeed*flowerDirection); 
-flowerSeventeenY = flowerSeventeenY + flowerDistance;
-flowerEighteenX = flowerEighteenX + (flowerSpeed*flowerDirection); 
-flowerEighteenY = flowerEighteenY + flowerDistance;
+germOneX = germOneX + (germSpeed*germDirection); //back and forth
+germOneY = germOneY + germDistance; // adjust rows
+germTwoX = germTwoX + (germSpeed*germDirection); 
+germTwoY = germTwoY + germDistance;
+germThreeX = germThreeX + (germSpeed*germDirection); 
+germThreeY = germThreeY + germDistance;
+germFourX = germFourX + (germSpeed*germDirection); 
+germFourY = germFourY + germDistance;
+germFiveX = germFiveX + (germSpeed*germDirection); 
+germFiveY = germFiveY + germDistance;
+germSixX = germSixX + (germSpeed*germDirection); 
+germSixY = germSixY + germDistance;
+germSevenX = germSevenX + (germSpeed*germDirection); 
+germSevenY = germSevenY + germDistance;
+germEightX = germEightX + (germSpeed*germDirection); 
+germEightY = germEightY + germDistance;
+germNineX = germNineX + (germSpeed*germDirection); 
+germNineY = germNineY + germDistance;
+germTenX = germTenX + (germSpeed*germDirection); 
+germTenY = germTenY + germDistance;
+germElevenX = germElevenX + (germSpeed*germDirection); 
+germElevenY = germElevenY + germDistance;
+germTwelveX = germTwelveX + (germSpeed*germDirection); 
+germTwelveY = germTwelveY + germDistance;
+germThirteenX = germThirteenX + (germSpeed*germDirection); 
+germThirteenY = germThirteenY + germDistance;
+germFourteenX = germFourteenX + (germSpeed*germDirection); 
+germFourteenY = germFourteenY + germDistance;
+germFifteenX = germFifteenX + (germSpeed*germDirection); 
+germFifteenY = germFifteenY + germDistance;
+germSixteenX = germSixteenX + (germSpeed*germDirection); 
+germSixteenY = germSixteenY + germDistance;
+germSeventeenX = germSeventeenX + (germSpeed*germDirection); 
+germSeventeenY = germSeventeenY + germDistance;
+germEighteenX = germEighteenX + (germSpeed*germDirection); 
+germEighteenY = germEighteenY + germDistance;
 
 
 // horizontal movement
-if (flowerNineX >= width-20){
-  flowerDirection = flowerDirection*-1;
+if (germNineX >= width-20){
+  germDirection = germDirection*-1;
   row +=1;//go down
 }
-if (flowerOneX <=20){
-  flowerDirection = flowerDirection*-1
+if (germOneX <=20){
+  germDirection = germDirection*-1
   row += 1;//go down
 }
 
 // vertical movement
 if (row>currentRow){
-  flowerDistance = rowDistance;
+  germDistance = rowDistance;
   currentRow = row;//reset
 }
 else{
-  flowerDistance = 0
+  germDistance = 0
 }
 
 // at bottom - game over
@@ -268,6 +276,7 @@ else{
  }
 }
 
+// move sanitizer left and right
 function movePlayer(){
   if (keyIsDown(LEFT_ARROW)) {
     playerX = playerX - playerSpeed;
@@ -277,6 +286,7 @@ function movePlayer(){
   }
 }
 
+// detects if a blast should be fired
 function blastDetect(){
   if (mouseIsPressed){
     blastFired = true; // fire blast when mouse is clicked
@@ -325,156 +335,158 @@ function firingTheBlast(){
    }
 }
 
+// collisions between player blast and germ
 function collision(){
 // row one
-  // collision with flower 1
-  if (blastOneX >= flowerOneX-flowerWidth/2 && blastOneX <= flowerOneX+flowerWidth/2 && blastOneY >= flowerOneY-flowerHeight/2 && blastOneY<=flowerOneY+flowerHeight/2){
-    flowerOneX = -1000; //send alien off screen
+  // collision with germ 1
+  if (blastOneX >= germOneX-germWidth/2 && blastOneX <= germOneX+germWidth/2 && blastOneY >= germOneY-germHeight/2 && blastOneY<=germOneY+germHeight/2){
+    germOneX = -1000; //send alien off screen
     blastOnePosition = 2; //return rocket to player
     score +=1; //adding points
   }
-  // collision with flower 2
-  if (blastOneX >= flowerTwoX-flowerWidth/2 && blastOneX <= flowerTwoX+flowerWidth/2 && blastOneY >= flowerTwoY-flowerHeight/2 && blastOneY<=flowerTwoY+flowerHeight/2){
-    flowerTwoX = -1000; //send alien off screen
+  // collision with germ 2
+  if (blastOneX >= germTwoX-germWidth/2 && blastOneX <= germTwoX+germWidth/2 && blastOneY >= germTwoY-germHeight/2 && blastOneY<=germTwoY+germHeight/2){
+    germTwoX = -1000; //send alien off screen
     blastOnePosition = 2; //return rocket to player
     score +=1; //adding points
   }
-    // collision with flower 3
-  if (blastOneX >= flowerThreeX-flowerWidth/2 && blastOneX <= flowerThreeX+flowerWidth/2 && blastOneY >= flowerThreeY-flowerHeight/2 && blastOneY<=flowerThreeY+flowerHeight/2){
-    flowerThreeX = -1000; //send alien off screen
+    // collision with germ 3
+  if (blastOneX >= germThreeX-germWidth/2 && blastOneX <= germThreeX+germWidth/2 && blastOneY >= germThreeY-germHeight/2 && blastOneY<=germThreeY+germHeight/2){
+    germThreeX = -1000; //send alien off screen
     blastOnePosition = 2; //return rocket to player
     score +=1; //adding points
   }
-  // collision with flower 4
-  if (blastOneX >= flowerFourX-flowerWidth/2 && blastOneX <= flowerFourX+flowerWidth/2 && blastOneY >= flowerFourY-flowerHeight/2 && blastOneY<=flowerFourY+flowerHeight/2){
-    flowerFourX = -1000; //send alien off screen
+  // collision with germ 4
+  if (blastOneX >= germFourX-germWidth/2 && blastOneX <= germFourX+germWidth/2 && blastOneY >= germFourY-germHeight/2 && blastOneY<=germFourY+germHeight/2){
+    germFourX = -1000; //send alien off screen
     blastOnePosition = 2; //return rocket to player
     score +=1; //adding points
   }
-  // collision with flower 5
-  if (blastOneX >= flowerFiveX-flowerWidth/2 && blastOneX <= flowerFiveX+flowerWidth/2 && blastOneY >= flowerFiveY-flowerHeight/2 && blastOneY<=flowerFiveY+flowerHeight/2){
-    flowerFiveX = -1000; //send alien off screen
+  // collision with germ 5
+  if (blastOneX >= germFiveX-germWidth/2 && blastOneX <= germFiveX+germWidth/2 && blastOneY >= germFiveY-germHeight/2 && blastOneY<=germFiveY+germHeight/2){
+    germFiveX = -1000; //send alien off screen
     blastOnePosition = 2; //return rocket to player
     score +=1; //adding points
   }
-  // collision with flower 6
-  if (blastOneX >= flowerSixX-flowerWidth/2 && blastOneX <= flowerSixX+flowerWidth/2 && blastOneY >= flowerSixY-flowerHeight/2 && blastOneY<=flowerSixY+flowerHeight/2){
-    flowerSixX = -1000; //send alien off screen
+  // collision with germ 6
+  if (blastOneX >= germSixX-germWidth/2 && blastOneX <= germSixX+germWidth/2 && blastOneY >= germSixY-germHeight/2 && blastOneY<=germSixY+germHeight/2){
+    germSixX = -1000; //send alien off screen
     blastOnePosition = 2; //return rocket to player
     score +=1; //adding points
   }
-  // collision with flower 7
-  if (blastOneX >= flowerSevenX-flowerWidth/2 && blastOneX <= flowerSevenX+flowerWidth/2 && blastOneY >= flowerSevenY-flowerHeight/2 && blastOneY<=flowerSevenY+flowerHeight/2){
-    flowerSevenX = -1000; //send alien off screen
+  // collision with germ 7
+  if (blastOneX >= germSevenX-germWidth/2 && blastOneX <= germSevenX+germWidth/2 && blastOneY >= germSevenY-germHeight/2 && blastOneY<=germSevenY+germHeight/2){
+    germSevenX = -1000; //send alien off screen
     blastOnePosition = 2; //return rocket to player
     score +=1; //adding points
    }
-  // collision with flower 8
-  if (blastOneX >= flowerEightX-flowerWidth/2 && blastOneX <= flowerEightX+flowerWidth/2 && blastOneY >= flowerEightY-flowerHeight/2 && blastOneY<=flowerEightY+flowerHeight/2){
-    flowerEightX = -1000; //send alien off screen
+  // collision with germ 8
+  if (blastOneX >= germEightX-germWidth/2 && blastOneX <= germEightX+germWidth/2 && blastOneY >= germEightY-germHeight/2 && blastOneY<=germEightY+germHeight/2){
+    germEightX = -1000; //send alien off screen
     blastOnePosition = 2; //return rocket to player
     score +=1; //adding points
   }
-  // collision with flower 9
-  if (blastOneX >= flowerNineX-flowerWidth/2 && blastOneX <= flowerNineX+flowerWidth/2 && blastOneY >= flowerNineY-flowerHeight/2 && blastOneY<=flowerNineY+flowerHeight/2){
-    flowerEightX = -1000; //send alien off screen
+  // collision with germ 9
+  if (blastOneX >= germNineX-germWidth/2 && blastOneX <= germNineX+germWidth/2 && blastOneY >= germNineY-germHeight/2 && blastOneY<=germNineY+germHeight/2){
+    germEightX = -1000; //send alien off screen
     blastOnePosition = 2; //return rocket to player
     score +=1; //adding points
   }
 
 //row two
-// collision with flower 10
-if (blastOneX >= flowerTenX-flowerWidth/2 && blastOneX <= flowerTenX+flowerWidth/2 && blastOneY >= flowerTenY-flowerHeight/2 && blastOneY<=flowerTenY+flowerHeight/2){
-  flowerTenX = -1000; //send alien off screen
+// collision with germ 10
+if (blastOneX >= germTenX-germWidth/2 && blastOneX <= germTenX+germWidth/2 && blastOneY >= germTenY-germHeight/2 && blastOneY<=germTenY+germHeight/2){
+  germTenX = -1000; //send alien off screen
   blastOnePosition = 2; //return rocket to player
   score +=1; //adding points
 }
-// collision with flower 11
-if (blastOneX >= flowerElevenX-flowerWidth/2 && blastOneX <= flowerElevenX+flowerWidth/2 && blastOneY >= flowerElevenY-flowerHeight/2 && blastOneY<=flowerElevenY+flowerHeight/2){
-  flowerElevenX = -1000; //send alien off screen
+// collision with germ 11
+if (blastOneX >= germElevenX-germWidth/2 && blastOneX <= germElevenX+germWidth/2 && blastOneY >= germElevenY-germHeight/2 && blastOneY<=germElevenY+germHeight/2){
+  germElevenX = -1000; //send alien off screen
   blastOnePosition = 2; //return rocket to player
   score +=1; //adding points
 }
-  // collision with flower 12
-if (blastOneX >= flowerTwelveX-flowerWidth/2 && blastOneX <= flowerTwelveX+flowerWidth/2 && blastOneY >= flowerTwelveY-flowerHeight/2 && blastOneY<=flowerTwelveY+flowerHeight/2){
-  flowerTwelveX = -1000; //send alien off screen
+  // collision with germ 12
+if (blastOneX >= germTwelveX-germWidth/2 && blastOneX <= germTwelveX+germWidth/2 && blastOneY >= germTwelveY-germHeight/2 && blastOneY<=germTwelveY+germHeight/2){
+  germTwelveX = -1000; //send alien off screen
   blastOnePosition = 2; //return rocket to player
   score +=1; //adding points
 }
-// collision with flower 13
-if (blastOneX >= flowerThirteenX-flowerWidth/2 && blastOneX <= flowerThirteenX+flowerWidth/2 && blastOneY >= flowerThirteenY-flowerHeight/2 && blastOneY<=flowerThirteenY+flowerHeight/2){
-  flowerThirteenX = -1000; //send alien off screen
+// collision with germ 13
+if (blastOneX >= germThirteenX-germWidth/2 && blastOneX <= germThirteenX+germWidth/2 && blastOneY >= germThirteenY-germHeight/2 && blastOneY<=germThirteenY+germHeight/2){
+  germThirteenX = -1000; //send alien off screen
   blastOnePosition = 2; //return rocket to player
   score +=1; //adding points
 }
-// collision with flower 14
-if (blastOneX >= flowerFourteenX-flowerWidth/2 && blastOneX <= flowerFourteenX+flowerWidth/2 && blastOneY >= flowerFourteenY-flowerHeight/2 && blastOneY<=flowerFourteenY+flowerHeight/2){
-  flowerFourteenX = -1000; //send alien off screen
+// collision with germ 14
+if (blastOneX >= germFourteenX-germWidth/2 && blastOneX <= germFourteenX+germWidth/2 && blastOneY >= germFourteenY-germHeight/2 && blastOneY<=germFourteenY+germHeight/2){
+  germFourteenX = -1000; //send alien off screen
   blastOnePosition = 2; //return rocket to player
   score +=1; //adding points
 }
-// collision with flower 15
-if (blastOneX >= flowerFifteenX-flowerWidth/2 && blastOneX <= flowerFifteenX+flowerWidth/2 && blastOneY >= flowerFifteenY-flowerHeight/2 && blastOneY<=flowerFifteenY+flowerHeight/2){
-  flowerFifteenX = -1000; //send alien off screen
+// collision with germ 15
+if (blastOneX >= germFifteenX-germWidth/2 && blastOneX <= germFifteenX+germWidth/2 && blastOneY >= germFifteenY-germHeight/2 && blastOneY<=germFifteenY+germHeight/2){
+  germFifteenX = -1000; //send alien off screen
   blastOnePosition = 2; //return rocket to player
   score +=1; //adding points
 }
-// collision with flower 16
-if (blastOneX >= flowerSixteenX-flowerWidth/2 && blastOneX <= flowerSixteenX+flowerWidth/2 && blastOneY >= flowerSixteenY-flowerHeight/2 && blastOneY<=flowerSixteenY+flowerHeight/2){
-  flowerSixteenX = -1000; //send alien off screen
+// collision with germ 16
+if (blastOneX >= germSixteenX-germWidth/2 && blastOneX <= germSixteenX+germWidth/2 && blastOneY >= germSixteenY-germHeight/2 && blastOneY<=germSixteenY+germHeight/2){
+  germSixteenX = -1000; //send alien off screen
   blastOnePosition = 2; //return rocket to player
   score +=1; //adding points
  }
-// collision with flower 17
-if (blastOneX >= flowerSeventeenX-flowerWidth/2 && blastOneX <= flowerSeventeenX+flowerWidth/2 && blastOneY >= flowerSeventeenY-flowerHeight/2 && blastOneY<=flowerSeventeenY+flowerHeight/2){
-  flowerSeventeenX = -1000; //send alien off screen
+// collision with germ 17
+if (blastOneX >= germSeventeenX-germWidth/2 && blastOneX <= germSeventeenX+germWidth/2 && blastOneY >= germSeventeenY-germHeight/2 && blastOneY<=germSeventeenY+germHeight/2){
+  germSeventeenX = -1000; //send alien off screen
   blastOnePosition = 2; //return rocket to player
   score +=1; //adding points
 }
-// collision with flower 18
-if (blastOneX >= flowerEighteenX-flowerWidth/2 && blastOneX <= flowerEighteenX+flowerWidth/2 && blastOneY >= flowerEighteenY-flowerHeight/2 && blastOneY<=flowerEighteenY+flowerHeight/2){
-  flowerEighteenX = -1000; //send alien off screen
+// collision with germ 18
+if (blastOneX >= germEighteenX-germWidth/2 && blastOneX <= germEighteenX+germWidth/2 && blastOneY >= germEighteenY-germHeight/2 && blastOneY<=germEighteenY+germHeight/2){
+  germEighteenX = -1000; //send alien off screen
   blastOnePosition = 2; //return rocket to player
   score +=1; //adding points
 }
 }
 
-function beetleAttacks(){
-  //draw beetle
-  image(beetleImg, beetleX, beetleY, beetleWidth, beetleHeight);
+// boss display, movement and attacks
+function bossAttacks(){
+  //draw boss
+  image(bossImg, bossX, bossY, bossWidth, bossHeight);
   //print health
   textFont(mainFont);
   textSize(15);
-  fill(34,139,34); //forest green
-  text(beetleHealth, beetleX, beetleY-25);
+  fill(46, 89, 59); //forest green
+  text(bossHealth, bossX, bossY-35 );
 
-  // beetle movement
-  beetleX = beetleX + beetleSpeed*beetleDirection;
-  if (beetleX>=width-10){ //hits right wall
-    beetleDirection = beetleDirection*-1;
+  // boss movement
+  bossX = bossX + bossSpeed*bossDirection;
+  if (bossX>=width-10){ //hits right wall
+    bossDirection = bossDirection*-1;
   }
-  if (beetleX<=10){ //hits left wall
-    beetleDirection = beetleDirection*-1;
+  if (bossX<=10){ //hits left wall
+    bossDirection = bossDirection*-1;
   }
 
   //hit by rocket
-  if (blastOneX >= beetleX - beetleWidth/2 && blastOneX <= beetleX + beetleWidth/2 && blastOneY >= beetleY-beetleHeight/2 && blastOneY<=beetleY+beetleHeight/2){
-    if(beetleHealth>10){ //not dead yet
+  if (blastOneX >= bossX - bossWidth/2 && blastOneX <= bossX + bossWidth/2 && blastOneY >= bossY-bossHeight/2 && blastOneY<=bossY+bossHeight/2){
+    if(bossHealth>10){ //not dead yet
       score+=1;
-      beetleHealth -= 10;
+      bossHealth -= 10;
       blastOnePosition = 2;
     }
     else{
       score+=1;
-      beetleSpeed = 0; //stop moving
-      beetleX = -1000; //move off screen
+      bossSpeed = 0; //stop moving
+      bossX = -1000; //move off screen
       blastOnePosition = 2;
     }
   }
 
-  //beetle fights back
+  //boss fights back
   //position one = motion after firing
-  //position two = reset back to beetle
+  //position two = reset back to boss
   //draw goo
   image(gooImg,gooX, gooY, gooWidth, gooHeight);
 
@@ -489,13 +501,13 @@ function beetleAttacks(){
     }
   }
   else{
-    gooX = beetleX;
-    gooY = beetleY;
+    gooX = bossX;
+    gooY = bossY;
   }
 
   if (gooPosition ===2){
-    gooX = beetleX;
-    gooY=beetleY;
+    gooX = bossX;
+    gooY=bossY;
     gooPosition = 1;
   }
 
@@ -507,40 +519,43 @@ function beetleAttacks(){
   }
 }
 
+// intro screen
 function startScreen(){
-  background(255, 105, 135);
+  background(154,200,136);
   //text
   fill(255);
   textFont(mainFont);
   textSize(90);
-  text("flower frenzy!", width/2, 80);
+  text("bacteria battle!", width/2, 80);
   textSize(40);
-  text("use left and right arrows to mov;e,", width/2, 170);
-  text("click to shoot,", width/2, 230);
-  text("collect power ups,", width/2, 290);
-  text("and grow your garden!", width/2, 350);
+  text("use left and right arrows to move,", width/2, 170);
+  text("click to shoot germs,", width/2, 230);
+  text("avoid the boss,", width/2, 290);
+  text("and protect yourself!", width/2, 350);
   text("press any key to start", width/2, 450);
 
   if (keyIsPressed){
     gameState = 1; 
   }
 }
+// win screen
 function win(){
-  background(255, 105, 135);
+  background(154,200,136);
   //text
   fill(255);
   textFont(mainFont);
   textSize(100);
-  text("you win!", width/2, 230);
+  text("you won!", width/2, 230);
   textSize(40);
   text("refresh to play again :)", width/2, 300);
 }
 
+// lose screen
 function lose(){
-  background(255, 105, 135);
+  background(154,200,136);
   //text
   fill(255);
-  textFont(mainFont);
+  textFont(mainFont); 
   textSize(100);
   text("you lost!", width/2, 230);
   textSize(40);
