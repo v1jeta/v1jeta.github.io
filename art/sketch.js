@@ -2,7 +2,7 @@
 
 // October 4th 2024
 
-const TILE_SIZE = 25;
+const TILE_SIZE = 5;
 let theTiles = [];
 
 
@@ -17,7 +17,8 @@ function setup() {
 }
 
 function draw() {
-  background(220);
+  background(190,190,220);
+  stroke("blue");
 
   for (let myTile of theTiles){
     line(myTile.x1, myTile.y1, myTile.x2, myTile.y2);
