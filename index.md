@@ -5,6 +5,7 @@
 
 - [Traffic Light](traffic-light)
 
+- [Generative Art](art)
 ## Projects
 
 - [Interactive Scene Assignment](interactive-scene)
