@@ -6,6 +6,8 @@
 - [Traffic Light](traffic-light)
 
 - [Generative Art](art)
+
+- [Perlin Noise Ball](perlin)
 ## Projects
 
 - [Interactive Scene Assignment](interactive-scene)
