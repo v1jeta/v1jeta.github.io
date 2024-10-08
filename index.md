@@ -13,3 +13,5 @@
 ## Projects
 
 - [Interactive Scene Assignment](interactive-scene)
+
+- [Object Notation and Arrays Assignment](objects-arrays)
