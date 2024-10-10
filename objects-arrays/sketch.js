@@ -14,12 +14,27 @@ let windowHeight = 900;
 let apple = {
   x: 200,
   y: 100,
-  emoji: '🍎'
+  emoji: '🍎',
 };
 let banana = {
-  x:250,
-  y:100,
-  emoji: '🍌'
+  x: 250,
+  y: 100,
+  emoji: '🍌',
+};
+let orange = {
+  x: 300,
+  y: 100,
+  emoji: '🍊',
+};
+let grapes = {
+  x: 350,
+  y: 100,
+  emoji: '🍇',
+};
+let melon = {
+  x: 400,
+  y: 100,
+  emoji: '🍈',
 };
 
 
@@ -50,6 +65,9 @@ function displayScreens(){
     textSize(25);
     text(apple.emoji, apple.x, apple.y);
     text(banana.emoji,banana.x,banana.y);
+    text(orange.emoji, orange.x, orange.y);
+    text(grapes.emoji, grapes.x, grapes.y);
+    text(melon.emoji, melon.x, melon,y);
   }
 
   if (gameState === 1){
