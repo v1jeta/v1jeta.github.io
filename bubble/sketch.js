@@ -66,6 +66,13 @@ function displayBubbles(){
   for (let bubble of theBubbles){
     fill(bubble.r, bubble.g, bubble.b, bubble.alpha);
     circle(bubble.x, bubble.y, bubble.radius*2);
+    showFruit(bubble.x, bubble.y, bubble.fruit);
+  }
+}
+
+function showFruit(x, y, type) {
+  if (type === "apple") {
+    
   }
 }
 
@@ -116,6 +123,7 @@ function spawnBubble(){
     timeX: random(10000000),
     timeY: random(10000000),
     deltaTime: 0.02,
+    fruit: random(["apple", "orange", "banana"]),
   };
   theBubbles.push(someBubble);
 }
