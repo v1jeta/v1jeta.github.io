@@ -16,13 +16,15 @@ let orangeImg;
 let coconutImg;
 let strawberryImg;
 let watermelonImg;
+let pineappleImg;
+let limeImg;
 //not fruit
 let startScreenImg;
 let bgImage;
 
 // fruit initialization
-let fruitWidth = 100;
-let fruitHeight = 100;
+let fruitWidth = 175;
+let fruitHeight = 175;
 
 // arrays
 let theFruits = [];
@@ -37,6 +39,8 @@ function preload(){
   coconutImg = loadImage('coconut.png');
   strawberryImg = loadImage('strawberry.png');
   watermelonImg = loadImage('watermelon.png');
+  pineappleImg = loadImage('pineapple.png');
+  limeImg = loadImage('lime.png');
 
   // not fruit images
   bgImage = loadImage('main-bg.png');
@@ -54,7 +58,7 @@ function setup() {
 }
 
 function draw() {
-  background(255);
+  background(bgImage);
   displayScreens();
 }
 
@@ -66,8 +70,9 @@ function displayScreens(){
 
   if (gameState === 1){
     //game running
-    image(bgImage, 0, 0);
-    moveFruitsWithNoise();
+    // image(bgImage, windowWidth, windowHeight);
+    //moveFruitsWithNoise();
+    moveFruitsUsingGravity();
     displayFruits();
     displayDeathSpots();
   }
@@ -139,10 +144,35 @@ function showFruit(x, y, type) {
   else if (type === "strawberry"){
     image(strawberryImg,x,y,fruitWidth,fruitHeight);
   }
-  else{
+  else if (type === "watermelon"){
     image(watermelonImg,x,y,fruitWidth,fruitHeight);
   }
+  else if (type === "pineapple"){
+    image(pineappleImg,x,y,fruitWidth,fruitHeight);
+  }
+  else{
+    image(limeImg,x,y,fruitWidth,fruitHeight);
+  }
 }
+
+function moveFruitsUsingGravity(){
+  for (let fruit of theFruits){
+    let choice = random(100);
+    let x = 0;
+    let y = 0;
+    let dx = 10;
+    let dy = 10;
+    let gravity = 0.02;
+    if (choice < 50){
+      // half of the time start negative
+      fruit.x = fruit.x*-1;
+      fruit.x = x;
+    }
+    fruit.y = dy - gravity;
+  }
+}
+
+
 
 function moveFruitsWithNoise(){
   for (let fruit of theFruits){
@@ -180,9 +210,9 @@ function moveFruitsRandomly(){
 
 function spawnFruit(){
   let someFruit = {
-    x: random(width),
+    x: random(width/2),
     y: height + random(0,25),
-    speed: random(0.5,3),
+    speed: random(0.1,2.5),
     radius: random(20,40),
     r: random(150),
     g: random(150),
@@ -191,7 +221,7 @@ function spawnFruit(){
     timeX: random(10000000),
     timeY: random(10000000),
     deltaTime: 0.02,
-    fruit: random(["apple", "orange", "banana", "coconut", "strawberry","watermelon"]),
+    fruit: random(["apple", "orange", "banana", "coconut", "strawberry","watermelon", "pineapple", "lime"]),
   };
   theFruits.push(someFruit);
 }
