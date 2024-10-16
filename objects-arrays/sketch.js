@@ -33,18 +33,18 @@ let deathLocations = [];
 // loading images, fonts and audio
 function preload(){
   // fruit images
-  appleImg = loadImage('apple.png');
-  bananaImg = loadImage('banana.png');
-  orangeImg = loadImage('orange.png');
-  coconutImg = loadImage('coconut.png');
-  strawberryImg = loadImage('strawberry.png');
-  watermelonImg = loadImage('watermelon.png');
-  pineappleImg = loadImage('pineapple.png');
-  limeImg = loadImage('lime.png');
+  appleImg = loadImage('./images/apple.png');
+  bananaImg = loadImage('./images/banana.png');
+  orangeImg = loadImage('./images/orange.png');
+  coconutImg = loadImage('./images/coconut.png');
+  strawberryImg = loadImage('./images/strawberry.png');
+  watermelonImg = loadImage('./images/watermelon.png');
+  pineappleImg = loadImage('./images/pineapple.png');
+  limeImg = loadImage('./images/lime.png');
 
   // not fruit images
-  bgImage = loadImage('main-bg.png');
-  startScreenImg = loadImage('startscreen.jpeg');
+  bgImage = loadImage('./images/main-bg.png');
+  startScreenImg = loadImage('./images/startscreen.jpeg');
 }
 
 function setup() {
@@ -53,26 +53,25 @@ function setup() {
     spawnFruit();
   }
 
-  // create new fruit every three seconds
-  window.setInterval(spawnFruit, 3000);
+  // create new fruit every seven seconds
+  window.setInterval(spawnFruit, 7000);
 }
 
 function draw() {
-  background(bgImage);
+  background(255);
   displayScreens();
 }
 
 function displayScreens(){
   if (gameState === 0){
     //start screen
-    image(startScreenImg, 0, 0);
+    background(startScreenImg);
   }
 
   if (gameState === 1){
     //game running
-    // image(bgImage, windowWidth, windowHeight);
-    //moveFruitsWithNoise();
-    moveFruitsUsingGravity();
+    background(bgImage);
+    moveFruitsWithNoise();
     displayFruits();
     displayDeathSpots();
   }
@@ -96,10 +95,10 @@ function displayDeathSpots(){
 
 function mousePressed(){
   for (let fruit of theFruits){
-    if (clickedInFruit(mouseX, mouseY, fruit)){
+    if (clickedInFruit(mouseX + 50, mouseY + 50, fruit)){
       let theIndex = theFruits.indexOf(fruit);
       theFruits.splice(theIndex, 1);
-      addDeath(mouseX,mouseY);
+      addDeath(mouseX+50,mouseY+50);
     }
   }
 }
@@ -113,7 +112,7 @@ function addDeath(_x,_y){
 }
 
 function clickedInFruit(x,y,theFruit){
-  let distanceAway = dist(x,y, theFruit.x, theFruit.y);
+  let distanceAway = dist(x+50,y+50, theFruit.x+50, theFruit.y+50);
   if (distanceAway<theFruit.radius){
     return true;
   }
@@ -212,7 +211,7 @@ function spawnFruit(){
   let someFruit = {
     x: random(width/2),
     y: height + random(0,25),
-    speed: random(0.1,2.5),
+    speed: random(0.0001,0.5),
     radius: random(20,40),
     r: random(150),
     g: random(150),

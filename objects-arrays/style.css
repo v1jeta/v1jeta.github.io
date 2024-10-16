@@ -3,6 +3,9 @@ html, body {
   padding: 0;
 }
 
+body {
+  cursor: url('sword.png'),auto;
+}
 canvas {
   display: block;
 }
