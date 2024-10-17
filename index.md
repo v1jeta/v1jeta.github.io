@@ -12,6 +12,7 @@
 - [Terrain Generation](terrain)
 
 - [Bubble Demo](bubble)
+- [Translate/Rotate](translate)
 ## Projects
 
 - [Interactive Scene Assignment](interactive-scene)

@@ -7,6 +7,8 @@
 
 // global
 let gameState = 1;
+let score = 0;
+let fruitsMissed = 0;
 
 // media uploads
 //fruit
@@ -89,7 +91,7 @@ function displayDeathSpots(){
   for (let spot of deathLocations){
     textAlign(CENTER,CENTER);
     fill('black');
-    text("X", spot.x, spot.y);
+    text("X", spot.x + 50, spot.y+50);
   }
 }
 
