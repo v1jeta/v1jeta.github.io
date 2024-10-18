@@ -6,7 +6,7 @@
 // - describe what you did to take this project "above and beyond"
 
 // global
-let gameState = 1;
+let gameState = 0;
 let score = 0;
 let fruitsMissed = 0;
 
@@ -68,6 +68,9 @@ function displayScreens(){
   if (gameState === 0){
     //start screen
     background(startScreenImg);
+    if (mouseIsPressed === true){
+      gameState = 1;
+    }
   }
 
   if (gameState === 1){
@@ -112,7 +115,6 @@ function addDeath(_x,_y){
   };
   deathLocations.push(deathSpot);
 }
-
 function clickedInFruit(x,y,theFruit){
   let distanceAway = dist(x+50,y+50, theFruit.x+50, theFruit.y+50);
   if (distanceAway<theFruit.radius){
@@ -172,8 +174,6 @@ function moveFruitsUsingGravity(){
     fruit.y = dy - gravity;
   }
 }
-
-
 
 function moveFruitsWithNoise(){
   for (let fruit of theFruits){
