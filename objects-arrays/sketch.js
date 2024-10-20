@@ -9,6 +9,7 @@
 let gameState = 0;
 let score = 0;
 let fruitsMissed = 0;
+const gravity = 0.3;
 
 // media uploads
 //fruit
@@ -56,7 +57,7 @@ function setup() {
   }
 
   // create new fruit every seven seconds
-  window.setInterval(spawnFruit, 7000);
+  window.setInterval(spawnFruit, 5000);
 }
 
 function draw() {
@@ -76,9 +77,9 @@ function displayScreens(){
   if (gameState === 1){
     //game running
     background(bgImage);
-    moveFruitsWithNoise();
-    displayFruits();
+    moveFruitsUsingGravity();
     displayDeathSpots();
+    displayFruits();
   }
 
   if (gameState === 2){
@@ -92,18 +93,20 @@ function displayScreens(){
 
 function displayDeathSpots(){
   for (let spot of deathLocations){
-    textAlign(CENTER,CENTER);
-    fill('black');
-    text("X", spot.x + 50, spot.y+50);
+    fill(61, 20, 1); //dark brown
+    textAlign(CENTER, CENTER);
+    textSize(30)
+    text("/", spot.x, spot.y);
   }
 }
 
 function mousePressed(){
   for (let fruit of theFruits){
-    if (clickedInFruit(mouseX + 50, mouseY + 50, fruit)){
+    if (clickedInFruit(mouseX, mouseY, fruit)){
       let theIndex = theFruits.indexOf(fruit);
-      theFruits.splice(theIndex, 1);
-      addDeath(mouseX+50,mouseY+50);
+      theFruits.splice(theIndex, 1); //remove clicked fruit from array
+      addDeath(mouseX,mouseY); // mark the spot
+      break;
     }
   }
 }
@@ -111,18 +114,20 @@ function mousePressed(){
 function addDeath(_x,_y){
   let deathSpot = {
     x: _x,
-    y: _y,
+    y: _y + fruitHeight/2,
   };
   deathLocations.push(deathSpot);
 }
 function clickedInFruit(x,y,theFruit){
-  let distanceAway = dist(x+50,y+50, theFruit.x+50, theFruit.y+50);
-  if (distanceAway<theFruit.radius){
-    return true;
-  }
-  else{
-    return false;
-  }
+  // let distanceAway = dist(x,y, theFruit.x, theFruit.y);
+  // return distanceAway < theFruit.radius;
+
+  return(
+    x >= theFruit.x &&
+    x <= theFruit.x + fruitWidth &&
+    y >= theFruit.y &&
+    y <= theFruit.y + fruitHeight
+  );
 }
 
 function displayFruits(){
@@ -160,65 +165,33 @@ function showFruit(x, y, type) {
 
 function moveFruitsUsingGravity(){
   for (let fruit of theFruits){
-    let choice = random(100);
-    let x = 0;
-    let y = 0;
-    let dx = 10;
-    let dy = 10;
-    let gravity = 0.02;
-    if (choice < 50){
-      // half of the time start negative
-      fruit.x = fruit.x*-1;
-      fruit.x = x;
-    }
-    fruit.y = dy - gravity;
-  }
-}
+    // update position using velocities
+    fruit.x += fruit.xVelocity; // horizontal movement
+    fruit.y += fruit.yVelocity; // vertical movement
 
-function moveFruitsWithNoise(){
-  for (let fruit of theFruits){
-    let x = noise(fruit.timeX)*width;
-    let y = noise(fruit.timeY)*height;
-    fruit.x = x;
-    fruit.y = y;
-    fruit.timeX += fruit.deltaTime;
-    fruit.timeY += fruit.deltaTime;
-  }
-}
+    // apply gravity to y position
+    fruit.yVelocity += gravity;
 
-function moveFruitsRandomly(){
-  for (let fruit of theFruits){
-    let choice = random(100);
-    if (choice < 50){
-      //move up
-      fruit.y -= fruit.speed;
-    }
-    else if (choice<65){
-      //move down
-      fruit.y += fruit.speed;
-    }
-
-    else if (choice < 80){
-      //move right
-      fruit.x += fruit.speed;
-    }
-    else{
-      //move left
-      fruit.x -= fruit.speed;
+    // check if fruit is off the screen
+    if (fruit.y > height + fruit.radius || fruit.x < fruit.radius *-1 || fruit.x > width + fruit.radius){
+      fruitsMissed += 1;
+      let theIndex = theFruits.indexOf(fruit);
+      theFruits.splice(theIndex, 1);
     }
   }
 }
 
 function spawnFruit(){
+  // spawn on left or right side randomly
+  let startOnLeft = random()> 0.5;
+
   let someFruit = {
-    x: random(width/2),
-    y: height + random(0,25),
+    x: startOnLeft ? 0: width, // start from left (0) or right (width)
+    y: height - 200, //start slightly offscreen
+    xVelocity: startOnLeft ? random(2,5) : random(-5,-2), // move right if on left, move left if on right
+    yVelocity: random(-12, -15), // initial upward velocity to create arc
     speed: random(0.0001,0.5),
     radius: random(20,40),
-    r: random(150),
-    g: random(150),
-    b: random(255),
-    alpha: random(255),
     timeX: random(10000000),
     timeY: random(10000000),
     deltaTime: 0.02,

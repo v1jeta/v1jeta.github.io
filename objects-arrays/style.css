@@ -6,6 +6,7 @@ html, body {
 body {
   cursor: url('sword.png'),auto;
 }
+
 canvas {
   display: block;
 }
