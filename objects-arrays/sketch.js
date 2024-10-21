@@ -1,15 +1,17 @@
 // Object Notation and Arrays Assignment
 // Vijeta Thakur
-// October 8th 2024
+// October 21st 2024
 //
 // Extra for Experts:
-// - describe what you did to take this project "above and beyond"
+// I added a favicon and changed the cursor image. 
 
 // global
+const gravity = 0.3;
+
+// counters
 let gameState = 0;
 let score = 0;
 let lives = 3;
-const gravity = 0.3;
 
 // media uploads
 // images
@@ -27,6 +29,10 @@ let bgImage;
 let gameOverImg;
 // fonts
 let mainFont;
+// sounds
+let bgm;
+let sliceEffect;
+let boomEffect;
 
 // fruit initialization
 let fruitWidth = 175;
@@ -55,12 +61,18 @@ function preload(){
   gameOverImg = loadImage('./images/gameover.jpg');
 
   // fonts
-  mainFont = loadFont('mainFont.ttf')
+  mainFont = loadFont('mainFont.ttf');
+
+  // audio
+  bgm = loadSound('./audio/bgm.mp3');
+  sliceEffect = loadSound('./audio/slice.mp3');
+  boomEffect = loadSound('./audio/boom.mp3')
 }
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
   textFont(mainFont);
+  bgm.play();
   for (let i = 0; i<1; i++){
     spawnFruit();
   }
@@ -68,9 +80,10 @@ function setup() {
     spawnBomb();
   }
 
-  // create new fruit every seven seconds
+  // create new fruit every five seconds
   window.setInterval(spawnFruit, 5000);
-  window.setInterval(spawnBomb, 10000);
+  // add a new bomb every seven seconds
+  window.setInterval(spawnBomb, 7000);
 }
 
 function draw() {
@@ -135,8 +148,9 @@ function displayDeathSpots(){
 function mousePressed(){
   for (let fruit of theFruits){
     if (clickedInFruit(mouseX, mouseY, fruit)){
+      sliceEffect.play(); // play sound effect
       let theIndex = theFruits.indexOf(fruit);
-      theFruits.splice(theIndex, 1); //remove clicked fruit from array
+      theFruits.splice(theIndex, 1); // remove clicked fruit from array
       addDeath(mouseX,mouseY); // mark the spot
       score += 1; // increase score
       break;
@@ -145,8 +159,9 @@ function mousePressed(){
 
   for (let bomb of theBombs){
     if (clickedInBomb(mouseX, mouseY, bomb)){
+      boomEffect.play(); // play sound effect
       let theIndex = theBombs.indexOf(bomb);
-      theBombs.splice(theIndex, 1); //remove clicked fruit from array
+      theBombs.splice(theIndex, 1); //remove bomb from array
       addDeath(mouseX,mouseY); // mark the spot
       lives -= 1; // increase score
       break;
@@ -162,8 +177,6 @@ function addDeath(_x,_y){
   deathLocations.push(deathSpot);
 }
 function clickedInFruit(x,y,theFruit){
-  // let distanceAway = dist(x,y, theFruit.x, theFruit.y);
-  // return distanceAway < theFruit.radius;
   return(
     x >= theFruit.x &&
     x <= theFruit.x + fruitWidth &&
@@ -173,8 +186,6 @@ function clickedInFruit(x,y,theFruit){
 }
 
 function clickedInBomb(x,y,theBomb){
-  // let distanceAway = dist(x,y, theFruit.x, theFruit.y);
-  // return distanceAway < theFruit.radius;
   return(
     x >= theBomb.x &&
     x <= theBomb.x + fruitWidth &&
@@ -241,7 +252,7 @@ function moveFruitsUsingGravity(){
       if(lives < 1){
         gameState = 2;
       }
-      let theIndex = theFruits.indexOf(fruit);
+      let theIndex = theFruits.indexOf(fruit); 
       theFruits.splice(theIndex, 1);
     }
   }
@@ -278,6 +289,7 @@ function spawnFruit(){
 }
 
 function spawnBomb(){
+  // spawn on left or right side randomly
   let startOnLeft = random()> 0.5;
   let someBomb = {
     x: startOnLeft ? 0: width, // start from left (0) or right (width)
