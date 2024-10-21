@@ -12,6 +12,7 @@ const gravity = 0.3;
 let gameState = 0;
 let score = 0;
 let lives = 3;
+let difficulty = 1;
 
 // media uploads
 // images
@@ -66,24 +67,15 @@ function preload(){
   // audio
   bgm = loadSound('./audio/bgm.mp3');
   sliceEffect = loadSound('./audio/slice.mp3');
-  boomEffect = loadSound('./audio/boom.mp3')
+  boomEffect = loadSound('./audio/boom.mp3');
 }
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
   textFont(mainFont);
   bgm.play();
-  for (let i = 0; i<1; i++){
-    spawnFruit();
-  }
-  for (let i = 0; i <1; i++){
-    spawnBomb();
-  }
-
-  // create new fruit every five seconds
-  window.setInterval(spawnFruit, 5000);
-  // add a new bomb every seven seconds
-  window.setInterval(spawnBomb, 7000);
+  spawnFruit();
+  spawnBomb();
 }
 
 function draw() {
@@ -101,6 +93,11 @@ function displayScreens(){
     text("Click to Start", width/2, height/2 + 250);
     if (mouseIsPressed === true){
       gameState = 1;
+      // create new fruit every two seconds
+      window.setInterval(spawnFruit, 2000);
+      // add a new bomb every four seconds
+      window.setInterval(spawnBomb, 4000);
+
     }
   }
 
@@ -133,14 +130,14 @@ function displayScoreAndLives(){
   text("Score:" + score, 10,10);
   // lives
   textAlign(RIGHT, TOP);
-  text("Lives:" + lives, width-10,10)
+  text("Lives:" + lives, width-10,10);
 }
 
 function displayDeathSpots(){
   for (let spot of deathLocations){
     fill(61, 20, 1); //dark brown
     textAlign(CENTER, CENTER);
-    textSize(30)
+    textSize(30);
     text("X", spot.x, spot.y);
   }
 }
@@ -153,6 +150,12 @@ function mousePressed(){
       theFruits.splice(theIndex, 1); // remove clicked fruit from array
       addDeath(mouseX,mouseY); // mark the spot
       score += 1; // increase score
+
+      //increase difficulity periodically
+      if (score % 2 === 0){
+        difficulty += 0.07;
+      }
+
       break;
     }
   }
@@ -163,7 +166,10 @@ function mousePressed(){
       let theIndex = theBombs.indexOf(bomb);
       theBombs.splice(theIndex, 1); //remove bomb from array
       addDeath(mouseX,mouseY); // mark the spot
-      lives -= 1; // increase score
+      lives -= 1; // lose one life
+      if (lives === 0){
+        gameState = 2; //reinstate game over for bombs
+      }
       break;
     }
   }
@@ -240,7 +246,7 @@ function showBomb(x,y){
 function moveFruitsUsingGravity(){
   for (let fruit of theFruits){
     // update position using velocities
-    fruit.x += fruit.xVelocity; // horizontal movement
+    fruit.x += fruit.xVelocity+difficulty; // horizontal movement
     fruit.y += fruit.yVelocity; // vertical movement
 
     // apply gravity to y position
@@ -249,7 +255,7 @@ function moveFruitsUsingGravity(){
     // check if fruit is off the screen
     if (fruit.y > height + fruit.radius || fruit.x < fruit.radius *-1 || fruit.x > width + fruit.radius){
       lives -= 1;
-      if(lives < 1){
+      if(lives === 0){
         gameState = 2;
       }
       let theIndex = theFruits.indexOf(fruit); 
@@ -260,7 +266,7 @@ function moveFruitsUsingGravity(){
 function moveBombsUsingGravity(){
   for (let bomb of theBombs){
     // update position using velocities
-    bomb.x += bomb.xVelocity; // horizontal movement
+    bomb.x += bomb.xVelocity+difficulty; // horizontal movement
     bomb.y += bomb.yVelocity; // vertical movement
 
     // apply gravity to y position
@@ -274,11 +280,11 @@ function spawnFruit(){
   let startOnLeft = random()> 0.5;
 
   let someFruit = {
-    x: startOnLeft ? 0: width, // start from left (0) or right (width)
+    x: startOnLeft ? 0: width - fruitWidth, // start from left (0) or right (width)
     y: height - 200, //start slightly offscreen
-    xVelocity: startOnLeft ? random(2,5) : random(-5,-2), // move right if on left, move left if on right
+    xVelocity: startOnLeft ? random(0,10) : random(-10,0), // move right if on left, move left if on right
     yVelocity: random(-12, -15), // initial upward velocity to create arc
-    speed: random(1,4),
+    speed: random(2,5)+ difficulty,
     radius: random(20,40),
     timeX: random(10000000),
     timeY: random(10000000),
@@ -292,11 +298,11 @@ function spawnBomb(){
   // spawn on left or right side randomly
   let startOnLeft = random()> 0.5;
   let someBomb = {
-    x: startOnLeft ? 0: width, // start from left (0) or right (width)
+    x: startOnLeft ? 0: width - fruitWidth, // start from left (0) or right (width)
     y: height - 200, //start slightly offscreen
-    xVelocity: startOnLeft ? random(1,7) : random(-7,-1), // move right if on left, move left if on right
+    xVelocity: startOnLeft ? random(0,10) : random(-10,0), // move right if on left, move left if on right
     yVelocity: random(-12, -15), // initial upward velocity to create arc
-    speed: random(1,4),
+    speed: random(2,5) + difficulty,
     radius: random(20,40),
     timeX: random(10000000),
     timeY: random(10000000),
