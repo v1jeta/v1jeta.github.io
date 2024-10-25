@@ -1,157 +1,174 @@
-// Grid Demo - 2D Arrays
-// Oct.22/2024
+// Grid Demo
+// Dan Schellenberg
+// Oct 22, 2024
 
-
-//if hardcoding the grid, use this:
-// let grid = [[1,0,0,1], 
-//             [0,1,1,0],
-//             [0,0,1,1],
-//             [1,1,1,0]];
+// if hardcoding the grid, use this:
+// let grid = [[1, 0, 0, 1],
+//             [0, 1, 1, 0],
+//             [1, 0, 1, 1],
+//             [1, 1, 1, 0]];
 
 let grid;
 let cellSize;
-const GRID_SIZE = 7;
+const GRID_SIZE = 40;
 let shouldToggleNeighbours = false;
+let autoplayIsOn = false;
+let renderOnFrameNumber = 6;
+let gosper;
 
-function setup() {
-  if (windowWidth<windowHeight){
-    createCanvas(windowWidth, windowWidth);
-  }
-  else{
-    createCanvas(windowHeight,windowHeight);
-  }
-  cellSize = width/GRID_SIZE;
-  grid = generateRandomGrid(GRID_SIZE,GRID_SIZE);
+function preload(){
+  gosper = loadJSON("gosper-gun.json");
 }
 
-function windowResized(){
-  if (windowWidth<windowHeight){
+function setup() {
+  if (windowWidth < windowHeight) {
+    createCanvas(windowWidth, windowWidth);
+  }
+  else {
+    createCanvas(windowHeight, windowHeight);
+  }
+  cellSize = height/GRID_SIZE;
+  grid = generateRandomGrid(GRID_SIZE, GRID_SIZE);
+}
+
+function windowResized() {
+  if (windowWidth < windowHeight) {
     resizeCanvas(windowWidth, windowWidth);
   }
-  else{
-    resizeCanvas(windowHeight,windowHeight);
+  else {
+    resizeCanvas(windowHeight, windowHeight);
   }
-  cellSize = width/GRID_SIZE;
+  cellSize = height/GRID_SIZE;
 }
 
 function draw() {
   background(220);
+  if (autoplayIsOn && frameCount % renderOnFrameNumber === 0){
+    grid = updateGrid();
+  }
   displayGrid();
 }
 
-function mousePressed(){
+function mousePressed() {
   let x = Math.floor(mouseX/cellSize);
   let y = Math.floor(mouseY/cellSize);
-  // toggle self
-  toggleCell(x,y);
 
-  //toggle neighbours
-  if (shouldToggleNeighbours){
-    toggleCell(x-1,y);
-    toggleCell(x+1,y);
-    toggleCell(x,y-1);
-    toggleCell(x,y+1);
+  //toggle self
+  toggleCell(x, y);
+
+  if (shouldToggleNeighbours) {
+    //toggle neighbours
+    toggleCell(x - 1, y);
+    toggleCell(x + 1, y);
+    toggleCell(x, y - 1);
+    toggleCell(x, y + 1);
   }
 }
 
-function toggleCell(x,y){
-  // make sure the toggled cell is in the grid
-  if (x >=0 && x<GRID_SIZE && y>=0 && y<GRID_SIZE){
-    if (grid[y][x] === 0){
+function toggleCell(x, y) {
+  //make sure the cell you're toggling is in the grid
+  if (x >= 0 && x < GRID_SIZE && y >= 0 && y < GRID_SIZE) {
+    if (grid[y][x] === 0) {
       grid[y][x] = 1;
     }
-    else{
+    else {
       grid[y][x] = 0;
     }
   }
 }
 
-function keyPressed(){
-  if (key === "r"){
-    grid = generateRandomGrid(GRID_SIZE,GRID_SIZE);
+function keyPressed() {
+  if (key === "r") {
+    grid = generateRandomGrid(GRID_SIZE, GRID_SIZE);
   }
-  if (key === "e"){
-    grid = generateEmptyGrid(GRID_SIZE,GRID_SIZE);
+  if (key === "e") {
+    grid = generateEmptyGrid(GRID_SIZE, GRID_SIZE);
   }
-  if (key === "n"){
+  if (key === "n") {
     shouldToggleNeighbours = !shouldToggleNeighbours;
   }
-  if (key === " "){
+  if (key === " ") {
     grid = updateGrid();
+  }
+  if (key === "a") {
+    autoplayIsOn = ! autoplayIsOn;
+  }
+  if (key === "g") {
+    grid = gosper;
   }
 }
 
-function updateGrid(){
-  // make another array to hold the next turn
-  let nextTurn = generateEmptyGrid(GRID_SIZE,GRID_SIZE);
+function updateGrid() {
+  //make another array to hold the next turn
+  let nextTurn = generateEmptyGrid(GRID_SIZE, GRID_SIZE);
 
-  // look at every cell
-
-  for(let y = 0; y < GRID_SIZE; y++){
-    for(let x = 0; x < GRID_SIZE; x++){
+  //look at every cell
+  for (let y = 0; y < GRID_SIZE; y++) {
+    for (let x = 0; x < GRID_SIZE; x++) {
       let neighbours = 0;
 
-      // look at every neighbour around it
-      for(let i =-1; i <= 1; i++){
-        for(let j = -1; j<=1; j++){
-          // don't fall off the edge
-          if (x+j >= 0 && x+j < GRID_SIZE && y+i>=0 && y+i < GRID_SIZE){
-            neighbours +=grid[y+1][x+j];
+      //look at every neighbour around it
+      for (let i = -1; i <= 1; i++) {
+        for (let j = -1; j <= 1; j++) {
+          //don't fall off the edge
+          if (x+j >= 0 && x+j < GRID_SIZE && y+i >= 0 && y+i < GRID_SIZE) {
+            neighbours += grid[y+i][x+j];
           }
         }
       }
 
-      // don't count yourself as a neighbour
+      //don't count yourself as a neighbour
       neighbours -= grid[y][x];
 
-      // apply the rules of the game
-      if (grid[y][x] === 1){ // alive
-        if (neighbours === 2 || neighbours === 3){
+      //apply the rules
+      if (grid[y][x] === 1) { //alive
+        if (neighbours === 2 || neighbours === 3) {
           nextTurn[y][x] = 1;
         }
-        else{
+        else {
           nextTurn[y][x] = 0;
         }
       }
 
-      if (grid[y][x] === 0){//dead
-        if (neighbours === 3){
+      if (grid[y][x] === 0) { //dead
+        if (neighbours === 3) {
           nextTurn[y][x] = 1;
         }
-        else{
+        else {
           nextTurn[y][x] = 0;
         }
-      
       }
-
     }
   }
   return nextTurn;
 }
 
-function displayGrid(){
-  for (let y = 0; y < GRID_SIZE; y++){
-    for (let x = 0; x < GRID_SIZE; x++){
-      if (grid[y][x] === 1){
+
+function displayGrid() {
+  for (let y = 0; y < GRID_SIZE; y++) {
+    for (let x = 0; x < GRID_SIZE; x++) {
+      if (grid[y][x] === 1) {
         fill("black");
       }
-      else if (grid[y][x] === 0){
+      else if (grid[y][x] === 0) {
         fill("white");
       }
-      square(x*cellSize,y*cellSize,cellSize);
+      square(x * cellSize, y * cellSize, cellSize);
     }
   }
 }
 
-function generateRandomGrid(cols, rows){
+
+function generateRandomGrid(cols, rows) {
   let newGrid = [];
-  for (let y = 0; y<rows; y++){
+  for (let y = 0; y < rows; y++) {
     newGrid.push([]);
-    for (let x = 0; x < cols; x++){
-      if (random(100)<50){
+    for (let x = 0; x < cols; x++) {
+      //make it a 1 half the time, a 0 half the time
+      if (random(100) < 50) {
         newGrid[y].push(1);
       }
-      else{
+      else {
         newGrid[y].push(0);
       }
     }
@@ -159,11 +176,11 @@ function generateRandomGrid(cols, rows){
   return newGrid;
 }
 
-function generateEmptyGrid(cols,rows){
+function generateEmptyGrid(cols, rows) {
   let newGrid = [];
-  for (let y = 0; y<rows; y++){
+  for (let y = 0; y < rows; y++) {
     newGrid.push([]);
-    for (let x = 0; x < cols; x++){
+    for (let x = 0; x < cols; x++) {
       newGrid[y].push(0);
     }
   }
