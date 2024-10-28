@@ -16,6 +16,10 @@
 - [Translate/Rotate](translate)
 
 - [Grid Demo](grid)
+
+- [Game  of Life](game-of-life)
+
+- [Rectangular Grid](rectangle-grid)
 ## Projects
 
 - [Interactive Scene Assignment](interactive-scene)
