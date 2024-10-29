@@ -20,8 +20,12 @@
 - [Game  of Life](game-of-life)
 
 - [Rectangular Grid](rectangle-grid)
+
+- [Character Grid Demo](character-grid)
 ## Projects
 
 - [Interactive Scene Assignment](interactive-scene)
 
 - [Object Notation and Arrays Assignment](objects-arrays)
+
+- [2D Arrays Assignment](2d-arrays)
