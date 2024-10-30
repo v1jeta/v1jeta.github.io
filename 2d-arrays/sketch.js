@@ -1,6 +1,6 @@
 // 2D Arrays Assignment - Minesweeper
 // Vijeta Thakur
-// October 29, 2024
+// October 30, 2024
 //
 // Extra for Experts:
 
@@ -16,7 +16,7 @@ function setup() {
     createCanvas(windowHeight, windowHeight);
   }
   cellSize = height/GRID_SIZE;
-  grid = generateRandomGrid(GRID_SIZE, GRID_SIZE);
+  grid = generateEmptyGrid(GRID_SIZE, GRID_SIZE);
 }
 
 function windowResized() {
@@ -56,9 +56,6 @@ function toggleCell(x, y) {
 
 function keyPressed() {
   if (key === "r") {
-    grid = generateRandomGrid(GRID_SIZE, GRID_SIZE);
-  }
-  if (key === "e") {
     grid = generateEmptyGrid(GRID_SIZE, GRID_SIZE);
   }
 }
@@ -68,7 +65,7 @@ function displayGrid() {
   for (let y = 0; y < GRID_SIZE; y++) {
     for (let x = 0; x < GRID_SIZE; x++) {
       if (grid[y][x] === 1) {
-        fill("black");
+        fill("white");
       }
       else if (grid[y][x] === 0) {
         fill(130);
@@ -76,24 +73,6 @@ function displayGrid() {
       square(x * cellSize, y * cellSize, cellSize);
     }
   }
-}
-
-
-function generateRandomGrid(cols, rows) {
-  let newGrid = [];
-  for (let y = 0; y < rows; y++) {
-    newGrid.push([]);
-    for (let x = 0; x < cols; x++) {
-      //make it a 1 half the time, a 0 half the time
-      if (random(100) < 50) {
-        newGrid[y].push(1);
-      }
-      else {
-        newGrid[y].push(0);
-      }
-    }
-  }
-  return newGrid;
 }
 
 function generateEmptyGrid(cols, rows) {
@@ -105,4 +84,29 @@ function generateEmptyGrid(cols, rows) {
     }
   }
   return newGrid;
+}
+
+function checkNeighbours(){
+  let  nextTurn = generateEmptyGrid(GRID_SIZE,GRID_SIZE);
+
+  for (let y = 0; y < GRID_SIZE; y++) {
+    for (let x = 0; x < GRID_SIZE; x++) {
+      let neighbours = 0;
+
+      //look at every neighbour around it
+      for (let i = -1; i <= 1; i++) {
+        for (let j = -1; j <= 1; j++) {
+          //don't fall off the edge
+          if (x+j >= 0 && x+j < GRID_SIZE && y+i >= 0 && y+i < GRID_SIZE) {
+            neighbours += grid[y+i][x+j];
+          }
+        }
+      }
+
+      //don't count yourself as a neighbour
+      neighbours -= grid[y][x];
+
+      // if bombs around
+    }
+  }
 }
