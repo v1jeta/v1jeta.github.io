@@ -7,6 +7,9 @@
 let grid;
 let cellSize;
 const GRID_SIZE = 18;
+let rows;
+let cols;
+let totalBombs = 30;
 
 function setup() {
   if (windowWidth < windowHeight) {
@@ -86,27 +89,56 @@ function generateEmptyGrid(cols, rows) {
   return newGrid;
 }
 
-function checkNeighbours(){
-  let  nextTurn = generateEmptyGrid(GRID_SIZE,GRID_SIZE);
+// function checkNeighbours(){
+//   let  nextTurn = generateEmptyGrid(GRID_SIZE,GRID_SIZE);
 
-  for (let y = 0; y < GRID_SIZE; y++) {
-    for (let x = 0; x < GRID_SIZE; x++) {
-      let neighbours = 0;
+//   for (let y = 0; y < GRID_SIZE; y++) {
+//     for (let x = 0; x < GRID_SIZE; x++) {
+//       let neighbours = 0;
 
-      //look at every neighbour around it
-      for (let i = -1; i <= 1; i++) {
-        for (let j = -1; j <= 1; j++) {
-          //don't fall off the edge
-          if (x+j >= 0 && x+j < GRID_SIZE && y+i >= 0 && y+i < GRID_SIZE) {
-            neighbours += grid[y+i][x+j];
-          }
-        }
-      }
+//       //look at every neighbour around it
+//       for (let i = -1; i <= 1; i++) {
+//         for (let j = -1; j <= 1; j++) {
+//           //don't fall off the edge
+//           if (x+j >= 0 && x+j < GRID_SIZE && y+i >= 0 && y+i < GRID_SIZE) {
+//             neighbours += grid[y+i][x+j];
+//           }
+//         }
+//       }
 
-      //don't count yourself as a neighbour
-      neighbours -= grid[y][x];
+//       //don't count yourself as a neighbour
+//       neighbours -= grid[y][x];
 
-      // if bombs around
+//       // if bombs around
+//     }
+//   }
+// }
+function displayBomb(){
+  if 
+}
+
+function pickBombSpots(rows,cols){
+  let options  = [];
+  for (let y = 0; y<rows; y++){
+    for (let x = 0; x < cols; x++){
+      options.push([x,y]);
+    }
+  }
+
+  for (let n = 0; n < totalBombs; n++) {
+    let index = floor(random(options.length));
+    let choice = options[index];
+    let i = choice[0];
+    let j = choice[1];
+    // Deletes that spot so it's no longer an option
+    options.splice(index, 1);
+    grid[i][j].bomb = true;
+  }
+
+
+  for (let i = 0; i < cols; i++) {
+    for (let j = 0; j < rows; j++) {
+      grid[i][j].displayBomb();
     }
   }
 }
