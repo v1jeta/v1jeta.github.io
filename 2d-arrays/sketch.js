@@ -113,9 +113,6 @@ function generateEmptyGrid(cols, rows) {
 //     }
 //   }
 // }
-function displayBomb(){
-  if 
-}
 
 function pickBombSpots(rows,cols){
   let options  = [];
