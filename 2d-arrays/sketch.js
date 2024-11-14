@@ -1,141 +1,144 @@
 // 2D Arrays Assignment - Minesweeper
 // Vijeta Thakur
-// October 30, 2024
+// November 15, 2024
 //
-// Extra for Experts:
+// Extra for Experts: Used recursion to show empty cells
 
-let grid;
-let cellSize;
-const GRID_SIZE = 18;
-let rows;
-let cols;
-let totalBombs = 30;
+// Game settings
+let cols = 10;    // Number of columns
+let rows = 10;    // Number of rows
+let cellSize = 40; // Size of each cell
+let grid = [];    // Array to store cell objects
+let totalMines = 20; // Number of mines
+
+// Cell class to handle each cell's state
+class Cell {
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+    this.isMine = false;
+    this.revealed = false;
+    this.mineCount = 0;
+  }
+
+  // Display the cell
+  show() {
+    stroke(0);
+    fill(this.revealed ? 200 : 255);
+    rect(this.x * cellSize, this.y * cellSize, cellSize, cellSize);
+    if (this.revealed) {
+      if (this.isMine) {
+        fill(127, 0, 0);
+        ellipse(this.x * cellSize + cellSize / 2, this.y * cellSize + cellSize / 2, cellSize / 2);
+      } else if (this.mineCount > 0) {
+        fill(0);
+        textAlign(CENTER, CENTER);
+        text(this.mineCount, this.x * cellSize + cellSize / 2, this.y * cellSize + cellSize / 2);
+      }
+    }
+  }
+
+  // Count mines around this cell
+  countMines() {
+    if (this.isMine) {
+      this.mineCount = -1;
+      return;
+    }
+    let total = 0;
+    for (let xOffset = -1; xOffset <= 1; xOffset++) {
+      for (let yOffset = -1; yOffset <= 1; yOffset++) {
+        let i = this.x + xOffset;
+        let j = this.y + yOffset;
+        if (i >= 0 && i < cols && j >= 0 && j < rows) {
+          let neighbor = grid[i][j];
+          if (neighbor.isMine) {
+            total++;
+          }
+        }
+      }
+    }
+    this.mineCount = total;
+  }
+
+  // Reveal the cell
+  reveal() {
+    this.revealed = true;
+    if (this.mineCount === 0) {
+      // Reveal neighbors if there are no adjacent mines
+      for (let xOffset = -1; xOffset <= 1; xOffset++) {
+        for (let yOffset = -1; yOffset <= 1; yOffset++) {
+          let i = this.x + xOffset;
+          let j = this.y + yOffset;
+          if (i >= 0 && i < cols && j >= 0 && j < rows) {
+            let neighbor = grid[i][j];
+            if (!neighbor.revealed) {
+              neighbor.reveal();
+            }
+          }
+        }
+      }
+    }
+  }
+}
 
 function setup() {
-  if (windowWidth < windowHeight) {
-    createCanvas(windowWidth, windowWidth);
-  }
-  else {
-    createCanvas(windowHeight, windowHeight);
-  }
-  cellSize = height/GRID_SIZE;
-  grid = generateEmptyGrid(GRID_SIZE, GRID_SIZE);
-}
-
-function windowResized() {
-  if (windowWidth < windowHeight) {
-    resizeCanvas(windowWidth, windowWidth);
-  }
-  else {
-    resizeCanvas(windowHeight, windowHeight);
-  }
-  cellSize = height/GRID_SIZE;
-}
-
-function draw() {
-  background(220);
-  displayGrid();
-}
-
-function mousePressed() {
-  let x = Math.floor(mouseX/cellSize);
-  let y = Math.floor(mouseY/cellSize);
-
-  //toggle self
-  toggleCell(x, y);
-}
-
-function toggleCell(x, y) {
-  //make sure the cell you're toggling is in the grid
-  if (x >= 0 && x < GRID_SIZE && y >= 0 && y < GRID_SIZE) {
-    if (grid[y][x] === 0) {
-      grid[y][x] = 1;
-    }
-    else {
-      grid[y][x] = 0;
-    }
-  }
-}
-
-function keyPressed() {
-  if (key === "r") {
-    grid = generateEmptyGrid(GRID_SIZE, GRID_SIZE);
-  }
-}
-
-
-function displayGrid() {
-  for (let y = 0; y < GRID_SIZE; y++) {
-    for (let x = 0; x < GRID_SIZE; x++) {
-      if (grid[y][x] === 1) {
-        fill("white");
-      }
-      else if (grid[y][x] === 0) {
-        fill(130);
-      }
-      square(x * cellSize, y * cellSize, cellSize);
-    }
-  }
-}
-
-function generateEmptyGrid(cols, rows) {
-  let newGrid = [];
-  for (let y = 0; y < rows; y++) {
-    newGrid.push([]);
-    for (let x = 0; x < cols; x++) {
-      newGrid[y].push(0);
-    }
-  }
-  return newGrid;
-}
-
-// function checkNeighbours(){
-//   let  nextTurn = generateEmptyGrid(GRID_SIZE,GRID_SIZE);
-
-//   for (let y = 0; y < GRID_SIZE; y++) {
-//     for (let x = 0; x < GRID_SIZE; x++) {
-//       let neighbours = 0;
-
-//       //look at every neighbour around it
-//       for (let i = -1; i <= 1; i++) {
-//         for (let j = -1; j <= 1; j++) {
-//           //don't fall off the edge
-//           if (x+j >= 0 && x+j < GRID_SIZE && y+i >= 0 && y+i < GRID_SIZE) {
-//             neighbours += grid[y+i][x+j];
-//           }
-//         }
-//       }
-
-//       //don't count yourself as a neighbour
-//       neighbours -= grid[y][x];
-
-//       // if bombs around
-//     }
-//   }
-// }
-
-function pickBombSpots(rows,cols){
-  let options  = [];
-  for (let y = 0; y<rows; y++){
-    for (let x = 0; x < cols; x++){
-      options.push([x,y]);
+  createCanvas(cols * cellSize, rows * cellSize);
+  // Create the grid
+  for (let i = 0; i < cols; i++) {
+    grid[i] = [];
+    for (let j = 0; j < rows; j++) {
+      grid[i][j] = new Cell(i, j);
     }
   }
 
-  for (let n = 0; n < totalBombs; n++) {
+  // Place mines randomly
+  let options = [];
+  for (let i = 0; i < cols; i++) {
+    for (let j = 0; j < rows; j++) {
+      options.push([i, j]);
+    }
+  }
+
+  for (let n = 0; n < totalMines; n++) {
     let index = floor(random(options.length));
     let choice = options[index];
     let i = choice[0];
     let j = choice[1];
-    // Deletes that spot so it's no longer an option
     options.splice(index, 1);
-    grid[i][j].bomb = true;
+    grid[i][j].isMine = true;
   }
 
-
+  // Calculate mine counts for each cell
   for (let i = 0; i < cols; i++) {
     for (let j = 0; j < rows; j++) {
-      grid[i][j].displayBomb();
+      grid[i][j].countMines();
+    }
+  }
+}
+
+function draw() {
+  background(255);
+  for (let i = 0; i < cols; i++) {
+    for (let j = 0; j < rows; j++) {
+      grid[i][j].show();
+    }
+  }
+}
+
+function mousePressed() {
+  let i = floor(mouseX / cellSize);
+  let j = floor(mouseY / cellSize);
+  if (i >= 0 && i < cols && j >= 0 && j < rows) {
+    let cell = grid[i][j];
+    cell.reveal();
+    if (cell.isMine) {
+      // Game over logic
+      console.log("Game Over!");
+      for (let x = 0; x < cols; x++) {
+        for (let y = 0; y < rows; y++) {
+          grid[x][y].revealed = true;
+        }
+      }
     }
   }
 }
