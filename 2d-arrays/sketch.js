@@ -5,7 +5,7 @@
 // Extra for Experts: Used recursion to show empty cells
 
 // Game settings
-let difficulty = "medium"
+let difficulty = "medium";
 let cols;    // Number of columns
 let rows;    // Number of rows
 let cellSize = 40; // Size of each cell
@@ -15,13 +15,64 @@ let isFlagging = false;
 
 // Media
 let bombImg;
-let bgm;
+let backgroundSound;
 
 function preload(){
   bombImg = loadImage('bomb.png');
-  bgm = loadSound('bgm.wav')
+  backgroundSound = loadSound('bgm.wav');
 }
 
+function setup() {
+  if (difficulty === "easy"){
+    cols = 6; 
+    rows = 6;
+    totalMines = 5;
+  }
+  else if (difficulty === "medium"){
+    cols = 10; 
+    rows = 10;
+    totalMines = 20;
+  }
+  else if (difficulty === "hard"){
+    cols = 12;
+    rows = 12;
+    totalMines = 30;
+  }
+  
+  backgroundSound.play();
+  
+  createCanvas(cols * cellSize, rows * cellSize);
+  // Create the grid
+  for (let i = 0; i < cols; i++) {
+    grid[i] = [];
+    for (let j = 0; j < rows; j++) {
+      grid[i][j] = new Cell(i, j);
+    }
+  }
+  // Place mines randomly
+  let options = [];
+  for (let i = 0; i < cols; i++) {
+    for (let j = 0; j < rows; j++) {
+      options.push([i, j]);
+    }
+  }
+  
+  for (let n = 0; n < totalMines; n++) {
+    let index = floor(random(options.length));
+    let choice = options[index];
+    let i = choice[0];
+    let j = choice[1];
+    options.splice(index, 1);
+    grid[i][j].isMine = true;
+  }
+  
+  // Calculate mine counts for each cell
+  for (let i = 0; i < cols; i++) {
+    for (let j = 0; j < rows; j++) {
+      grid[i][j].countMines();
+    }
+  }
+}
 // Cell class to handle each cell's state
 class Cell {
   constructor(x, y) {
@@ -34,26 +85,28 @@ class Cell {
   }
 
   // Display the cell
-// Display the cell
-show() {
-  stroke(0);
-  fill(this.revealed ? 200 : 255);  // Show cell background
-  rect(this.x * cellSize, this.y * cellSize, cellSize, cellSize);
+  // Display the cell
+  show() {
+    stroke(0);
+    fill(this.revealed ? 200 : 255);  // Show cell background
+    rect(this.x * cellSize, this.y * cellSize, cellSize, cellSize);
 
-  if (this.revealed) {
-    if (this.isMine) {
-      image(bombImg, this.x * cellSize, this.y * cellSize, cellSize, cellSize);
-    } else if (this.mineCount > 0) {
-      fill(0);
-      textAlign(CENTER, CENTER);
-      text(this.mineCount, this.x * cellSize + cellSize / 2, this.y * cellSize + cellSize / 2);
+    if (this.revealed) {
+      if (this.isMine) {
+        image(bombImg, this.x * cellSize, this.y * cellSize, cellSize, cellSize);
+      }
+      else if (this.mineCount > 0) {
+        fill(0);
+        textAlign(CENTER, CENTER);
+        text(this.mineCount, this.x * cellSize + cellSize / 2, this.y * cellSize + cellSize / 2);
+      }
     }
-  } else if (this.flagged) { // Flag should be visible if cell is flagged and not revealed
-    fill(255, 0, 0);
-    textAlign(CENTER, CENTER);
-    text('🚩', this.x * cellSize + cellSize / 2, this.y * cellSize + cellSize / 2);
+    else if (this.flagged) { // Flag should be visible if cell is flagged and not revealed
+      fill(255, 0, 0);
+      textAlign(CENTER, CENTER);
+      text('🚩', this.x * cellSize + cellSize / 2, this.y * cellSize + cellSize / 2);
+    }
   }
-}
 
 
   // Count mines around this cell
@@ -99,59 +152,6 @@ show() {
   }
 }
 
-function setup() {
-  if (difficulty === "easy"){
-    cols = 6; 
-    rows = 6;
-    totalMines = 5;
-  }
-  else if (difficulty === "medium"){
-    cols = 10; 
-    rows = 10;
-    totalMines = 20;
-  }
-  else if (difficulty === "hard"){
-    cols = 12;
-    rows = 12;
-    totalMines = 30;
-  }
-  
-  
-  createCanvas(cols * cellSize, rows * cellSize);
-  // Create the grid
-  for (let i = 0; i < cols; i++) {
-    grid[i] = [];
-    for (let j = 0; j < rows; j++) {
-      grid[i][j] = new Cell(i, j);
-    }
-  }
-  bgm.play();
-  
-  // Place mines randomly
-  let options = [];
-  for (let i = 0; i < cols; i++) {
-    for (let j = 0; j < rows; j++) {
-      options.push([i, j]);
-    }
-  }
-  
-  for (let n = 0; n < totalMines; n++) {
-    let index = floor(random(options.length));
-    let choice = options[index];
-    let i = choice[0];
-    let j = choice[1];
-    options.splice(index, 1);
-    grid[i][j].isMine = true;
-  }
-  
-  // Calculate mine counts for each cell
-  for (let i = 0; i < cols; i++) {
-    for (let j = 0; j < rows; j++) {
-      grid[i][j].countMines();
-    }
-  }
-  
-}
 
 // Track Space key press and release
 function keyPressed() {
@@ -187,7 +187,8 @@ function mousePressed() {
       if (!cell.revealed) {
         cell.flagged = !cell.flagged;
       }
-    } else if (mouseButton === LEFT) {
+    }
+    else if (mouseButton === LEFT) {
       // Left-click to reveal only if not flagged
       if (!cell.flagged) {
         cell.reveal();
