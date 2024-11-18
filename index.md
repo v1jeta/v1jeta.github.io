@@ -22,6 +22,8 @@
 - [Rectangular Grid](rectangle-grid)
 
 - [Character Grid Demo](character-grid)
+
+- [Fireworks OOP](fireworks)
 ## Projects
 
 - [Interactive Scene Assignment](interactive-scene)
