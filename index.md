@@ -24,6 +24,8 @@
 - [Character Grid Demo](character-grid)
 
 - [Fireworks OOP](fireworks)
+
+- [Collide 2D Library](collide)
 ## Projects
 
 - [Interactive Scene Assignment](interactive-scene)
