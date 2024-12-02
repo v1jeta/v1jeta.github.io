@@ -26,6 +26,8 @@
 - [Fireworks OOP](fireworks)
 
 - [Collide 2D Library](collide)
+
+- [Local Storage Demo](local-storage)
 ## Projects
 
 - [Interactive Scene Assignment](interactive-scene)
