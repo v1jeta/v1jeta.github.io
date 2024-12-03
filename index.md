@@ -28,6 +28,8 @@
 - [Collide 2D Library](collide)
 
 - [Local Storage Demo](local-storage)
+
+- [Inheritance Demo](inheritance)
 ## Projects
 
 - [Interactive Scene Assignment](interactive-scene)
